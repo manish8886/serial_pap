@@ -1,0 +1,39 @@
+1.There will be two abstract entities which will be using the buffer one of them readers and other will be writers.
+2. Reader Perspective:
+    Though, there might be muliple readers involve with this design but all of them will share common traits. 
+    So let's look at use cases from the perspective of reader.
+    <USE CASE entity=reader type=buff_comm optional>
+    	 The state of the buffer seen by a reader at any point of a time will be:
+	<en>
+	Reader has already read the whole buffer or just started reading.Therefore in both case it will be at the head of buffer.
+	</en>
+	<en>
+	Reader has read some partial data. So the reader will try or trying to do something in the middle of the buffer.
+	</en>
+    </USE CASE>
+    <USE CASE entity=reader type=buff_comm >
+    	 <en>
+	 Reader must wait unitl all the buffer has been filled and then filled buffer will be copied to reader's own buffer.
+	 <Reason>
+	 	 1.In our case we have only one reader therefore first copying one buffer to another is not gross inefficient.
+		 2.As our incoming messages will be combination of some continuous bytes, so reader doesn't need to wait for
+		 and check for all bytes discreetly to build the whole message. Our approach will  copy a defnite number of
+		 bytes from source buffer and above them it can process. The length of the buffer will gurantee atleast one 
+		 message.
+	 </reason>
+	 <cons>
+		1.As many of times while reader is busying processing the message, there might be many time a spill over is
+		happening at source side. Though it might not be a problem for us but we are loosing some messages.
+	 </cons>	
+	 </en>
+    </USE CASE>
+
+3.Implementation Detials:
+<entity type= source>
+	Our implementation of source thread which will collect the data from the IO source will be non-blocking. Means a reader will 
+	register with the source through a mean of call backs and as the source buffer is filled, all callbacks will be called. Here,
+	as a point of efficiency, we assume that registered call backs take small time to execute. It is also assumed that, while
+	dispatching the call back, the source thread  will stop recieving more data. Actually this strategy is also make other tasks 
+	a lot easier like if a registered entity doesn't want more message it can simply return from the call back.
+</entity>		 
+		 
