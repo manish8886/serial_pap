@@ -11,7 +11,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp\
+        enumport.cpp
 
 HEADERS  += mainwindow.h
 
