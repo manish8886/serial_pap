@@ -14,6 +14,10 @@ public:
   CMsgProc():semaphore(1){
     semaphore.acquire();
   }
+  ~CMsgProc(){
+    semaphore.release();
+  }
+  
 protected:
   void run();
 public:
@@ -41,8 +45,6 @@ private:
   char* buffer; 
   //  const int MAX_INDEX;
 };
-
-
 int main(int argc, char *argv[]){
   //  QCoreApplication a(argc, argv);
   (void)argc;
@@ -54,6 +56,7 @@ int main(int argc, char *argv[]){
       qDebug()<<"serial port opened succesfully";
   }else{
     qDebug() << "couldn't open the serial port";
+    exit(0);
   }
   CMsgProc processor;
   CPortReader reader(&qtSerialPort,&processor);
@@ -62,6 +65,8 @@ int main(int argc, char *argv[]){
   
   /*Now wait for atleast 5 minute*/
   sleep(5*60);
+  reader.terminate();
+  processor.terminate();
   return 0;
   //  return a.exec();
 }
@@ -87,7 +92,6 @@ void CPortReader::run(){
   }
   exit();
 }
-
 void CMsgProc::report(char* buffer){
   /*Try to obtain lock, if the other thread is busy in processing
     just return from here.*/
@@ -97,6 +101,7 @@ void CMsgProc::report(char* buffer){
   semaphore.release();
   return;
 }
+
 void CMsgProc::run(){
   while(1){
     semaphore.acquire();
