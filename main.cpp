@@ -1,4 +1,3 @@
-#include <QtGui/QApplication>
 #include <Ivy/ivy.h>
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
@@ -8,14 +7,38 @@
 extern int enumerateserialports();
 extern void setserialconf(QextSerialPort& qtSerialPort);
 #define  MAX_INDEX 256
+QSemaphore sema;
   /*Buffer full*/
+class CThread:public QThread{
+public:
+  CThread(QThread** threadArray):
+    firstThread(threadArray[0]),
+    secondThread(threadArray[1])
+  {
+
+
+  }
+protected:
+  void run(){
+    firstThread->start();
+    secondThread->start();
+    sleep(5*60);
+    firstThread->terminate();
+    secondThread->terminate();
+    sema.release();
+  }
+
+private:
+  QThread* firstThread;
+  QThread* secondThread;
+} ;
 class CMsgProc:public QThread{
 public:
   CMsgProc():semaphore(1){
     semaphore.acquire();
   }
   ~CMsgProc(){
-    semaphore.release();
+    sema.release();
   }
   
 protected:
@@ -45,6 +68,7 @@ private:
   char* buffer; 
   //  const int MAX_INDEX;
 };
+
 int main(int argc, char *argv[]){
   //  QCoreApplication a(argc, argv);
   (void)argc;
@@ -53,20 +77,20 @@ int main(int argc, char *argv[]){
   QextSerialPort qtSerialPort;
   setserialconf(qtSerialPort);
   if(qtSerialPort.open(QIODevice::ReadWrite)){
-      qDebug()<<"serial port opened succesfully";
+    qDebug()<<"serial port opened succesfully";
   }else{
     qDebug() << "couldn't open the serial port";
-    exit(0);
+    qtSerialPort.close();
+    return 0;
   }
   CMsgProc processor;
   CPortReader reader(&qtSerialPort,&processor);
-  processor.start();
-  reader.start();
-  
+  QThread* tArray[2]={&reader,&processor};
+  CThread thread(tArray);
+  thread.start();
+  sema.acquire();
+  qtSerialPort.close();
   /*Now wait for atleast 5 minute*/
-  sleep(5*60);
-  reader.terminate();
-  processor.terminate();
   return 0;
   //  return a.exec();
 }
