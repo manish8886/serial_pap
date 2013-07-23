@@ -23,4 +23,4 @@ unix:!macx:!symbian: LIBS += -L$$PWD/qextserialport/ -lqextserialport
 INCLUDEPATH += $$PWD/qextserialport
 DEPENDPATH += $$PWD/qextserialport
 
-unix:!macx:!symbian: LIBS += -livy
+#unix:!macx:!symbian: LIBS += -livy
