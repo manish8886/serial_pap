@@ -2,10 +2,9 @@
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
 #include <QtCore/QSemaphore>
-#include <QtExtSerialPort/qextserialenumerator.h>
 #include <QtExtSerialPort/qextserialport.h>
 extern int enumerateserialports();
-extern void setserialconf(QextSerialPort& qtSerialPort);
+extern void setserialconf(PortSettings& portsettings);
 #define  MAX_INDEX 256
 QSemaphore sema;
   /*Buffer full*/
@@ -69,31 +68,7 @@ private:
   //  const int MAX_INDEX;
 };
 
-int main(int argc, char *argv[]){
-  //  QCoreApplication a(argc, argv);
-  (void)argc;
-  (void)argv;
-  enumerateserialports();
-  QextSerialPort qtSerialPort;
-  setserialconf(qtSerialPort);
-  if(qtSerialPort.open(QIODevice::ReadWrite)){
-    qDebug()<<"serial port opened succesfully";
-  }else{
-    qDebug() << "couldn't open the serial port";
-    qtSerialPort.close();
-    return 0;
-  }
-  CMsgProc processor;
-  CPortReader reader(&qtSerialPort,&processor);
-  QThread* tArray[2]={&reader,&processor};
-  CThread thread(tArray);
-  thread.start();
-  sema.acquire();
-  qtSerialPort.close();
-  /*Now wait for atleast 5 minute*/
-  return 0;
-  //  return a.exec();
-}
+
 
 
 void CPortReader::run(){
@@ -132,4 +107,30 @@ void CMsgProc::run(){
     qDebug()<< buffer;
   }
   exit();
+}
+int main(int argc, char *argv[]){
+  //QCoreApplication a(argc, argv);
+  (void)argc;
+  (void)argv;
+  enumerateserialports();
+  PortSettings portSettings;
+  setserialconf(portSettings);
+  QextSerialPort qtSerialPort("/dev/ttyS0",portSettings,QextSerialPort::Polling);
+  if(qtSerialPort.open(QIODevice::ReadWrite)){
+    qDebug()<<"serial port opened succesfully";
+  }else{
+    qDebug() << "couldn't open the serial port";
+    qtSerialPort.close();
+    return 0;
+  }
+  CMsgProc processor;
+  CPortReader reader(&qtSerialPort,&processor);
+  QThread* tArray[2]={&reader,&processor};
+  CThread thread(tArray);
+  thread.start();
+  sema.acquire();
+  qtSerialPort.close();
+  /*Now wait for atleast 5 minute*/
+  return 0;
+  //  return a.exec();
 }

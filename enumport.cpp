@@ -25,13 +25,10 @@ int enumerateserialports(){
 }
 
 
-void setserialconf(QextSerialPort& qtSerialPort){
-  qtSerialPort.setQueryMode(QextSerialPort::Polling);
-  qtSerialPort.setDataBits(DATA_8);
-  qtSerialPort.setDtr(false);
-  qtSerialPort.setFlowControl(FLOW_OFF);
-  qtSerialPort.setParity(PAR_NONE);
-  //qtSerialPort.setPortName("/dev/ttyS0");
-  qtSerialPort.setStopBits(STOP_1);
-  qtSerialPort.setBaudRate(BAUD38400);
+void setserialconf(PortSettings& portSettings){
+  portSettings.BaudRate=BAUD38400;
+  portSettings.DataBits=DATA_8;
+  portSettings.Parity=PAR_NONE;
+  portSettings.StopBits=STOP_1;
+  portSettings.FlowControl=FLOW_OFF;
 }
