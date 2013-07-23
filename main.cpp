@@ -1,4 +1,3 @@
-#include <Ivy/ivy.h>
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
 #include <QtCore/QSemaphore>
