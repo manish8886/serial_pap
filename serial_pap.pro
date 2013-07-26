@@ -11,16 +11,26 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp\
-        enumport.cpp
+enumport.cpp \
+listener.cpp \
+reader.cpp \
+proc.cpp 
 
-HEADERS  += mainwindow.h
+#HEADERS  += mainwindow.h
 
-FORMS    += mainwindow.ui
+#FORMS    += mainwindow.ui
 
-unix:!macx:!symbian: LIBS += -L$$PWD/qextserialport/ -lqextserialport
+#unix:!macx:!symbian: LIBS += -L$$PWD/qextserialport/ -lqextserialport
 
-INCLUDEPATH += $$PWD/qextserialport
-DEPENDPATH += $$PWD/qextserialport
+#INCLUDEPATH += $$PWD/qextserialport
+#DEPENDPATH += $$PWD/qextserialport
+
+CONFIG += extserialport
 
 #unix:!macx:!symbian: LIBS += -livy
+
+HEADERS += \
+    listener.h \
+    reader.h \
+    CMsgProc.h
+    
