@@ -11,7 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-enumport.cpp
+enumport.cpp \
+listener.cpp \
+reader.cpp \
+proc.cpp 
 
 #HEADERS  += mainwindow.h
 
@@ -25,3 +28,9 @@ enumport.cpp
 CONFIG += extserialport
 
 #unix:!macx:!symbian: LIBS += -livy
+
+HEADERS += \
+    listener.h \
+    reader.h \
+    CMsgProc.h
+    
