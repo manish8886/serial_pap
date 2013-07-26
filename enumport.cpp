@@ -31,4 +31,5 @@ void setserialconf(PortSettings& portSettings){
   portSettings.Parity=PAR_NONE;
   portSettings.StopBits=STOP_1;
   portSettings.FlowControl=FLOW_OFF;
+  portSettings.Timeout_Millisec=2000;
 }
