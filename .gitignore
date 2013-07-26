@@ -16,4 +16,6 @@
 moc_*.cpp
 //qrc_*.cpp
 Makefile
+qextserialport/
+serial_pap
 *-build-*
