@@ -1,7 +1,7 @@
-
-|STX|MSG_LEN|AC_ID|MSG_ID|-----Actual Msg----|ck_a|ck_b|
-total length= len(stx)+len(MSG_LEN)+len(AC_ID)+len(MSG_ID)+len(MSG)+len(ck_a)+len(ck_b)
-
+ -----------------------------------------------------------------------------------------
+ | |STX|MSG_LEN|AC_ID|MSG_ID|-----Actual Msg----|ck_a|ck_b|                                |
+ | total length= len(stx)+len(MSG_LEN)+len(AC_ID)+len(MSG_ID)+len(MSG)+len(ck_a)+len(ck_b) |
+ ----------------------------------------------------------------------------------------
 int main(){
   static uint8_t i; 
   int16_t climb = -gps.ned_vel.z; 
