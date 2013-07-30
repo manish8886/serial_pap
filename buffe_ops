@@ -35,5 +35,41 @@
 	as a point of efficiency, we assume that registered call backs take small time to execute. It is also assumed that, while
 	dispatching the call back, the source thread  will stop recieving more data. Actually this strategy is also make other tasks 
 	a lot easier like if a registered entity doesn't want more message it can simply return from the call back.
-</entity>		 
-		 
+</entity>
+--------------------------------------------------------------------------------------------------------------------------------------------------
+Threads:
+------------------------------------------------------------------------------------------------------------------------------------------------
+1.Main Thread:
+2.One thread will be listening to UART and copying the data to a shared message queue.:Hardware Thread.
+3.One thread will construct the thread from this shared message queue and will put new constructed messages to some other caches.-Worker Thread.
+
+Main Thread description:
+-------------------------
+1.Start: The main thread is application's main thread.
+2.Responsibility:
+a.The main thread will open the connection to UART. and will provide the serial connection pointer to both reader and writer. 
+b.Main Thread also shares the Message Queues where reader and writer has to put their data.
+3.Finish:
+Main thread will finish when UART port is closed  due to some error or manually. Or after a particular timeout. Main thread will also
+responsible for signalling other thread that data from the serial port has stopped so they must finish their execution.It will wait for 
+other threads to finishand then exit safely.
+
+Reader Thread Description:
+-------------------------
+1.Start: This thread will be started from the main thread. The reader thread will be given a valid pointer to serial port. And also access to
+	 a shared queue where it needs to transmit the messages.
+2.Processing:This thread is mainly responsible for getting the data from the serial port and after a MAXIMUM number of
+bytes are received, these data is transferred to a fifo queue.And from this fifo queue these raw bytes are converted to some meaning full messages.
+3.Finish:This thread will continue to read the data until the serial port is closed.
+
+Processing Thread Description:
+------------------------------
+1.Start:Processing thread will started by the Main thread and provided a handle to queues of buffers from where	it will process the raw bytes and
+make some menaingfull messages. These reconstucted messages will also need to be put in a shared queue for consumptions from the clients.
+2.Finish:The main thread will signal this thread to exit and usually it will be when serial port is closed or some error occured.
+
+
+
+
+
+
