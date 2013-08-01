@@ -6,13 +6,11 @@
 #include "common.h"
 class CReaderThread:public QThread{
  public:
- CReaderThread(QextSerialPort* pSerialport,QQueue<char*>*qu,QSemaphore* qusema):
+ CReaderThread(QextSerialPort* pSerialport,QQueue< char*>*qu,QSemaphore* qusema):
   pqtSerialPort(pSerialport),
     pbufferedQueue(qu),
-    pqueuesema(qusema)
-  {
-
-  }
+    pqueuesema(qusema){
+    }
   ~CReaderThread(){
     pbufferedQueue=NULL;
     pqtSerialPort=NULL;
@@ -22,7 +20,11 @@ class CReaderThread:public QThread{
   void run();
  private:
   QextSerialPort *pqtSerialPort;
-  QQueue<char*>* pbufferedQueue;
+  //A shared queue to put the incoming message from
+  //serial port.
+  QQueue< char*>* pbufferedQueue;
+  /*A shared Semaphore for syncronizon for the 
+    above queue*/
   QSemaphore* pqueuesema;
  private:
   void readPort();

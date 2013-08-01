@@ -7,7 +7,6 @@ int main(){
   int16_t climb = -gps.ned_vel.z; 
   int16_t course = (DegOfRad(gps.course)/((int32_t)1e6)); 
   if (UART1CheckFreeSpace((uint8_t)(((0+1+4+4+2+4+2+2+2+4+1+1 +2)+4)))) { 
-
 	    downlink_nb_bytes += ((0+1+4+4+2+4+2+2+2+4+1+1 +2)+4);; 
 	    downlink_nb_msgs++; 
 	    UART1Transmit(0x99); 

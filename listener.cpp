@@ -49,5 +49,3 @@ void ListenApp::closeapp(){
   }
   exit(0);
 }
-
-

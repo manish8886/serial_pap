@@ -10,11 +10,16 @@ TARGET = serial_pap
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-enumport.cpp \
-listener.cpp \
+SOURCES +=  enumport.cpp \
+ listener.cpp \
+ main.cpp \
+ msg.cpp \
+ msgfactory.cpp \
+proc.cpp \
 reader.cpp \
-proc.cpp 
+procthread.cpp
+
+
 
 #HEADERS  += mainwindow.h
 
@@ -30,7 +35,16 @@ CONFIG += extserialport
 #unix:!macx:!symbian: LIBS += -livy
 
 HEADERS += \
+    CMsgProc.h \
+    common.h \
     listener.h \
+    messages.h \
+    msgfactory.h \
+    procthread.h \
     reader.h \
-    CMsgProc.h
+    telemsg.h
+
+
+QMAKE_CXXFLAGS += -funsigned-char
     
+DEFINES+=DOWNLINK

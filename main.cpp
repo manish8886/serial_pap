@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
       bool bResult=true;
       if(argv[index][1]=='b'){
 	baudrate = argstring.toInt(&bResult);
-      }else if(argv[index][1]='t'){
+      }else if(argv[index][1]=='t'){
 	time = argstring.toInt(&bResult);
       }else{
 	std::cout << "Invalid command line option"<<std::endl;
