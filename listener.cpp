@@ -24,6 +24,7 @@ ListenApp::~ListenApp(){
     delete pqtSerialPort;
   if(ptimer)
     delete ptimer;
+
 }
 bool ListenApp::setup(int brate,int time){
   //  enumerateserialports();
