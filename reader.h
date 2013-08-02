@@ -5,6 +5,7 @@
 #include "CMsgProc.h"
 #include "common.h"
 class CReaderThread:public QThread{
+  Q_OBJECT
  public:
  CReaderThread(QextSerialPort* pSerialport,QQueue< char*>*qu,QSemaphore* qusema):
   pqtSerialPort(pSerialport),
@@ -16,6 +17,9 @@ class CReaderThread:public QThread{
     pqtSerialPort=NULL;
     pqueuesema=NULL;
   }
+ signals:
+  void queuenotempty();
+
  protected:
   void run();
  private:

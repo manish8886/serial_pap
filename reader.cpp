@@ -29,3 +29,7 @@ void CReaderThread::readPort(){
   std::cout << "reader thread is now exiting"<<std::endl;
   return;
 }
+void CReaderThread::queuenotempty(){
+  
+
+}

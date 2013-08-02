@@ -42,8 +42,8 @@ HEADERS += \
     msgfactory.h \
     procthread.h \
     reader.h \
-    telemsg.h
-
+    telemsg.h \
+    syncqueue.h
 
 QMAKE_CXXFLAGS += -funsigned-char
     

@@ -8,11 +8,11 @@
 #define GET_MSG_ID(buffer)    ((buffer[3]))
 #define GET_MSG_PTR(buffer)   (&(buffer[MSG_HEADER_LEN]))
 /*
- Message Format:
- ----------------------------------------------------------------------------------------
- | |STX|MSG_LEN|AC_ID|MSG_ID|-----Actual Msg----|ck_a|ck_b|                               |
- | total length=len(stx)+len(MSG_LEN)+len(AC_ID)+len(MSG_ID)+len(MSG)+len(ck_a)+len(ck_b) |
- ----------------------------------------------------------------------------------------
+  Message Format:
+  ----------------------------------------------------------------------------------------
+  | |STX|MSG_LEN|AC_ID|MSG_ID|-----Actual Msg----|ck_a|ck_b|                               |
+  | total length=len(stx)+len(MSG_LEN)+len(AC_ID)+len(MSG_ID)+len(MSG)+len(ck_a)+len(ck_b) |
+  ----------------------------------------------------------------------------------------
 */
 bool CMsgProcThread::verifychecksum(const char* buffer){
   quint8 checksum=0,ck_a=0,ck_b=0,msg_len=0;
@@ -60,4 +60,12 @@ void CMsgProcThread::processmsg(const  char* buffer){
     }
   }
   return;
+}
+
+void CMsgProcThread::run(){
+  while(!bstop){
+    char* buffer = NULL;
+    pqueuesema.acquire();
+    pqueuesema.acquire();
+  }
 }

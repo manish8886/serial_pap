@@ -5,6 +5,7 @@
 #include <QtCore/QtGlobal>
 #include "telemsg.h"
 class CMsgProcThread:public QThread{
+  Q_OBJECT
  public:
  CMsgProcThread(QQueue<const  char*>*qu,QSemaphore* qsema,
 		 QVector<const CTelemetryMsg*>* pmsgvec):
@@ -12,11 +13,13 @@ class CMsgProcThread:public QThread{
     pqueuesema(qsema),
     pmsgContainer(pmsgvec)
     {
-
+      bstop = false;
     }
+ public slots:
+  void wakeupproc();
  public:
-  
-
+  void run();
+  bool stop_reader();
  private:
   void processmsg(const  char* buffer);
   /*this function always assumes that the data ponited by
@@ -32,4 +35,6 @@ class CMsgProcThread:public QThread{
     above queue*/
   QSemaphore* pqueuesema;
   QVector<const CTelemetryMsg*>* pmsgContainer;
+  
+  bool bstop;
 }; 
