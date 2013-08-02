@@ -63,9 +63,11 @@ void CMsgProcThread::processmsg(const  char* buffer){
 }
 
 void CMsgProcThread::run(){
-  while(!bstop){
-    char* buffer = NULL;
-    pqueuesema.acquire();
-    pqueuesema.acquire();
+  while(bstop==false){
+    char* msgbuff = pbufferedQueue->dequeue();
+    processmsg(msgbuff);
+    delete [] msgbuff;
   }
+
 }
+

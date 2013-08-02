@@ -15,9 +15,8 @@ SOURCES +=  enumport.cpp \
  main.cpp \
  msg.cpp \
  msgfactory.cpp \
-proc.cpp \
-reader.cpp \
-procthread.cpp
+ reader.cpp \
+ procthread.cpp
 
 
 
@@ -35,7 +34,6 @@ CONFIG += extserialport
 #unix:!macx:!symbian: LIBS += -livy
 
 HEADERS += \
-    CMsgProc.h \
     common.h \
     listener.h \
     messages.h \
@@ -43,7 +41,7 @@ HEADERS += \
     procthread.h \
     reader.h \
     telemsg.h \
-    syncqueue.h
+    synchqueue.h
 
 QMAKE_CXXFLAGS += -funsigned-char
     

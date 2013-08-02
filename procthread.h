@@ -1,26 +1,26 @@
 #include <QtCore/QThread>
-#include <QtCore/QQueue>
-#include <QtCore/QSemaphore>
 #include <QtCore/QVector>
 #include <QtCore/QtGlobal>
 #include "telemsg.h"
+#include "synchqueue.h"
 class CMsgProcThread:public QThread{
   Q_OBJECT
  public:
- CMsgProcThread(QQueue<const  char*>*qu,QSemaphore* qsema,
-		 QVector<const CTelemetryMsg*>* pmsgvec):
+  CMsgProcThread(QSynchQueue<char*>*qu, QVector<CTelemetryMsg*>* pmsgvec):
   pbufferedQueue(qu),
-    pqueuesema(qsema),
     pmsgContainer(pmsgvec)
     {
-      bstop = false;
+      bstop=false;
     }
- public slots:
-  void wakeupproc();
- public:
+  
+  public Q_SLOTS:
+  void stop_processing(){
+    bstop = true;
+  }
+ protected:
   void run();
-  bool stop_reader();
  private:
+  bool bstop;
   void processmsg(const  char* buffer);
   /*this function always assumes that the data ponited by
     buffer always has STX as it starts byte. This function check
@@ -28,13 +28,8 @@ class CMsgProcThread:public QThread{
   */
   bool verifychecksum(const char* buffer);
  private:
-    //A shared queue to put the incoming message from
+  //A shared queue to put the incoming message from
   //serial port.
-  QQueue<const  char*>* pbufferedQueue;
-  /*A shared Semaphore for syncronizon for the 
-    above queue*/
-  QSemaphore* pqueuesema;
-  QVector<const CTelemetryMsg*>* pmsgContainer;
-  
-  bool bstop;
+  QSynchQueue< char*>* pbufferedQueue;
+  QVector< CTelemetryMsg*>* pmsgContainer;
 }; 

@@ -1,3 +1,5 @@
+#ifndef SYNCH_QUEUE_H
+#define SYNCH_QUEUE_H
 #include <QtCore/QQueue>
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
@@ -17,7 +19,7 @@ class QSynchQueue{
   QMutex mutex;
 };
 template<class T>
-int QSynchQueue<T>::MAX_SIZE = 256;
+const int QSynchQueue<T>::MAX_SIZE = 256;
 
 template<class T>
 QSynchQueue<T>::QSynchQueue(){
@@ -26,26 +28,27 @@ QSynchQueue<T>::QSynchQueue(){
 
 template<class T>
 void QSynchQueue<T>::enqueue(const T& data){
-  mutext.lock();
+  mutex.lock();
   while(container.size()==MAX_SIZE){
     cv.wait(&mutex);
   }
-  contaniner.enqueue(data);
-  if(contanier.size()==1)//if contanier has atleast one item
-    container.wakeall();
-  mutext.unlock();
+  container.enqueue(data);
+  if(container.size()==1)//if contanier has atleast one item
+    cv.wakeAll();
+  mutex.unlock();
 }
 
 template<class T>
 T QSynchQueue<T>::dequeue(){
   T data;
-  mutext.lock();
+  mutex.lock();
   while(container.size()==0){
     cv.wait(&mutex);
   }
-  data = contaniner.dequeue();
-  if(contanier.size()==MAX_SIZE-1)//if contanier has atleast one item
-    container.wakeall();
-  mutext.unlock();
+  data = container.dequeue();
+  if(container.size()==MAX_SIZE-1)//if contanier has atleast one item
+    cv.wakeAll();
+  mutex.unlock();
   return data;
 }
+#endif

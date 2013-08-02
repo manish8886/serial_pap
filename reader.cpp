@@ -19,17 +19,11 @@ void CReaderThread::readPort(){
       i=0;
       temp = new char[256];
       memcpy(temp,buffer,MAX_BYTE);
-      pqueuesema->acquire();
       pbufferedQueue->enqueue(temp);
-      pqueuesema->release();
       bzero(buffer,MAX_BYTE);
     }
   }
   std::cout << "serial port is closed."<<std::endl;
   std::cout << "reader thread is now exiting"<<std::endl;
   return;
-}
-void CReaderThread::queuenotempty(){
-  
-
 }

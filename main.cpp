@@ -4,28 +4,32 @@
 int main(int argc, char *argv[]){
     int baudrate=9600;
     int time = 3000*60;// i minute
-    if(argc>2){
+    if(argc>1+2){
       std::cout<<"Too many arguments"<<std::endl;
     }
-    int index=0;
+    int index=1;
+    std::cout <<"Number of arguments are:"<<argc<<std::endl;
     while(index<argc){
       if(argv[index][0]!='-' || argv[index][2]!='=' ){
-	std::cout << "Invalid characters in arugments"<<std::endl;
+	std::cout << "Invalid characters in:"<< argv[index]<<std::endl;
 	return 0;
       }
-      QString argstring(argv[index]+2); 
-      bool bResult=true;
+      std::cout << argv[index]<<std::endl;
+      QString argstring(argv[index]+3); 
+      bool bresult = true;
       if(argv[index][1]=='b'){
-	baudrate = argstring.toInt(&bResult);
+	baudrate = argstring.toInt(&bresult);
       }else if(argv[index][1]=='t'){
-	time = argstring.toInt(&bResult);
+	time = argstring.toInt(&bresult);
       }else{
-	std::cout << "Invalid command line option"<<std::endl;
-      }
-      if(!bResult){
-	std::cout<< "Invalid values for the command line options" <<std::endl;
+	std::cout << "Invalid command in::"<<argv[index]<<std::endl;
 	return 0;
-      } 
+      }
+      if(bresult==false){
+	std::cout << "non-numeric value in::"<< argstring.toStdString()<<std::endl;
+	return 0;
+      }
+
       index++;
     }
     ListenApp a(argc, argv);

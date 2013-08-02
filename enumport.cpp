@@ -7,7 +7,6 @@
 #include <QtCore/QDebug>
 #include <QtExtSerialPort/qextserialenumerator.h>
 #include <QtExtSerialPort/qextserialport.h>
-
 int enumerateserialports(){
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
     qDebug() << "List of ports:";
@@ -23,7 +22,6 @@ int enumerateserialports(){
     }
     return 0;
 }
-
 
 void setserialconf(PortSettings& portSettings){
   portSettings.BaudRate=BAUD38400;
