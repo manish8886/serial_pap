@@ -84,56 +84,56 @@ QString GPSMsg::getPrettyMsg(){
   }
   
   str+=QString("===========================");
-
+  str+=QString("\n");
   str+=QString("gps_mode:=");
-  str+=QString(gps_mode);
+  str+=QString::number(gps_mode);
   str+=QString("\n");
 
 
   str+=QString("gps_utm_east:=");
-  str+=QString(gps_utm_east);
+  str+=QString::number(gps_utm_east);
   str+=QString("\n");
 
   
   str+=QString("gps_utm_north:=");
-  str+=QString(gps_utm_north);
+  str+=QString::number(gps_utm_north);
   str+=QString("\n");
 
 
   str+=QString("gps_course:=");
-  str+=QString(gps_course);
+  str+=QString::number(gps_course);
   str+=QString("\n");
   
   str+=QString("gps_alt:=");
-  str+=QString(gps_alt);
+  str+=QString::number(gps_alt);
   str+=QString("\n");
 
   str+=QString("gps_speed:=");
-  str+=QString(gps_speed);
+  str+=QString::number(gps_speed);
   str+=QString("\n");
 
 
   str+=QString("gps_climb:=");
-  str+=QString(gps_climb);
+  str+=QString::number(gps_climb);
   str+=QString("\n");
 
 
   str+=QString("gps_week:=");
-  str+=QString(gps_week);
+  str+=QString::number(gps_week);
   str+=QString("\n");
 
 
   str+=QString("gps_tow:=");
-  str+=QString(gps_tow);
+  str+=QString::number(gps_tow);
   str+=QString("\n");
 
   str+=QString("gps_utm_Zone:=");
-  str+=QString(gps_utm_zone);
+  str+=QString::number(gps_utm_zone);
   str+=QString("\n");
 
 
-  str+=QString("gps_utm_Zone:=");
-  str+=QString(gps_nb_err);
+  str+=QString("gps_nb_err:=");
+  str+=QString::number(gps_nb_err);
   str+=QString("\n");
 
 

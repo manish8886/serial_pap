@@ -43,6 +43,10 @@ HEADERS += \
     telemsg.h \
     synchqueue.h
 
-QMAKE_CXXFLAGS += -funsigned-char
+QMAKE_CXXFLAGS += -funsigned-char 
+QMAKE_CXXFLAGS += -g3
     
 DEFINES+=DOWNLINK
+DEFINES += QT_NO_DEBUG
+#DEFINES += QT_NO_DEBUG_OUTPUT
+

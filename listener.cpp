@@ -14,6 +14,9 @@ ListenApp::ListenApp(int argc, char *argv[]):
 
   pqtSerialPort = new QextSerialPort ("/dev/ttyS0",settings,QextSerialPort::Polling);
 
+  /*create timer but don't start it now*/
+  ptimer = new QTimer();
+  
   //first create threads
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
   processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer);
@@ -34,48 +37,53 @@ bool ListenApp::setup(int brate,int time){
     std::cout << "Baud Rate Not Supported Yet"<<std::endl;
     return 0;
   }
+
+  QObject::connect(ptimer,SIGNAL(timeout()),this,SLOT(closeapp()));
   
   if(pqtSerialPort->open(QIODevice::ReadWrite)==false){
-    qDebug() << "couldn't open the serial port";
+    std::cout << "couldn't open the serial port";
     pqtSerialPort->close();
     return 0;
   }else{
-    qDebug()<<"serial port opened succesfully";
+    std::cout<<"serial port opened succesfully";
   }
   //first connect to dsr signal of pqtSerialPort
   connect(pqtSerialPort,SIGNAL(dsrChanged ( bool )),
 	  this,SLOT(serial_port_dsr_event(bool )));
   
-  /*create timer but don't start it now*/
-  ptimer = new QTimer();
-  ptimer->setInterval(time);
-  QObject::connect(ptimer,SIGNAL(timeout()),this,SLOT(closeapp()));
-  
   /*connect processor thread slot to serial port closed signal*/
-  connect(this,SIGNAL(serial_port_closed),processor,SLOT(stop_processing()));
+  connect(this,SIGNAL(serial_port_closed()),processor,SLOT(stop_processing()));
+  
+  /*set the timer interval*/
+  ptimer->setInterval(time);
+  /*start timer*/
+  ptimer->start();
+  
   /*start reader*/
   reader->start();
   /*start processor*/
   processor->start();
-  /*start timer*/
-  ptimer->start();
-
-  /*wait for finshing of both threads*/
-  reader->wait();
-  processor->wait();
-  exit(0);
+ 
   return true;
 }
 void ListenApp::closeapp(){
   std::cout<< "app is being closed";
+  emit serial_port_closed();
   if(pqtSerialPort){
     pqtSerialPort->close();
   }
   if(ptimer){
     ptimer->stop();
   }
-  emit serial_port_closed();
 
+  /*wait for finshing of both threads*/
+  if(reader)
+    reader->wait();
+  if(processor){
+    processor->stop_processing();
+    processor->wait(100);
+  }
+  exit(0);
 }
 
 void ListenApp::serial_port_dsr_event(bool bstatus){

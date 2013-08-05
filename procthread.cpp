@@ -1,12 +1,15 @@
 #include "procthread.h"
 #include <QtCore/QDebug>
+#include <iostream>
+#include "messages.h"
 #include "msgfactory.h"
 #include "common.h"
 #define MSG_HEADER_LEN        ((1+1+1+1))/*STX+MSG_LEN+AC_ID|MSG_ID*/
 #define MSG_TAIL_LEN          ((1+1)) /*ck_a+ck_b*/
-#define MOVE_TO_DATA(buffer)  (buffer=&(((char*)buffer)[MSG_HEADER_LEN]))
-#define GET_MSG_ID(buffer)    ((buffer[3]))
-#define GET_MSG_PTR(buffer)   (&(buffer[MSG_HEADER_LEN]))
+#define MOVE_TO_DATA(buffer,start)  (buffer=&(((char*)buffer)[start+MSG_HEADER_LEN]))
+#define GET_MSG_LEN(buffer,start)    ((buffer[start+1]))
+#define GET_MSG_ID(buffer,start)    ((buffer[start+3]))
+#define GET_MSG_PTR(buffer,start)   (&(buffer[start+MSG_HEADER_LEN]))
 /*
   Message Format:
   ----------------------------------------------------------------------------------------
@@ -15,26 +18,34 @@
   ----------------------------------------------------------------------------------------
 */
 bool CMsgProcThread::verifychecksum(const char* buffer){
-  quint8 checksum=0,ck_a=0,ck_b=0,msg_len=0;
+  quint8 checksum_a=0,checksum_b=0,ck_a=0,ck_b=0,msg_len=0;
   int i=0;
-  if(buffer[0]!=CTelemetryMsg::STX){
+  if(buffer[0]!=CTelemetryMsg::STX ){
     qDebug()<<"Incoorect Input to verify checksum\n";
     return false;
   }
+  
   msg_len = buffer[1];
+
+  if(msg_len <MSG_TAIL_LEN)
+    return false;
+
   i=1;/*start from the message len*/
   while(i!=(msg_len-MSG_TAIL_LEN)){
-    checksum+=buffer[i++]; 
+    checksum_a+=buffer[i++]; 
+    checksum_b+=checksum_a;
   }
+  
+    
   ck_a = buffer[i++];
   ck_b = buffer[i++];
 
-  if(ck_a != ck_b){
-    qDebug()<<"Recived data has checksum error ck_a!=ck_b";
+  if(ck_a != checksum_a){
+    //   qDebug()<<"Recived data has checksum error ck_a!=checksum_a\n";
     return false;
   }
-  if(checksum!=ck_a){
-    qDebug()<<"calculated checksum is not equal to recived checksum";
+  if(checksum_b!=ck_b){
+    // qDebug()<<"Recived data has checksum error ck_a!=checksum_a\n";
     return false;
   }
   return true;
@@ -46,13 +57,16 @@ void CMsgProcThread::processmsg(const  char* buffer){
   while(i<MAX_BYTE){
     char data = buffer[i];
     if(data == CTelemetryMsg::STX){
-      int msg_len = buffer[i+1];
+      int msg_len = GET_MSG_LEN(buffer,i);
       if(verifychecksum(&buffer[i])){
-	CTelemetryMsg* pmsg = CMsgFactory::CreateMsg(GET_MSG_ID(buffer),msg_len,GET_MSG_PTR(buffer));
-	if(pmsg==NULL)
-	  qDebug() << "";
-	else
+	CTelemetryMsg* pmsg = CMsgFactory::CreateMsg(GET_MSG_ID(buffer,i),msg_len,GET_MSG_PTR(buffer,i));
+	if(pmsg==NULL){
+	  std::cout <<"Couldn't form the message from message id:"<<(int)(buffer[i+3])<<std::endl;
+	}
+	else{
 	  pmsgContainer->push_back(pmsg);
+	  std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
+	}
       }
       i+=msg_len;
     }else{
@@ -68,6 +82,6 @@ void CMsgProcThread::run(){
     processmsg(msgbuff);
     delete [] msgbuff;
   }
-
+  return;
 }
 

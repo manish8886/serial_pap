@@ -33,3 +33,7 @@ class CMsgProcThread:public QThread{
   QSynchQueue< char*>* pbufferedQueue;
   QVector< CTelemetryMsg*>* pmsgContainer;
 }; 
+
+
+
+
