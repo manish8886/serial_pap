@@ -4,7 +4,7 @@
 #include "telemsg.h"
 class CMsgFactory{
  public:
-  static CTelemetryMsg* CreateMsg(quint8 msg_id,quint8 len,const char* buff );
+  static CTelemetryMsg* CreateMsg(quint8 msg_id,quint8 len, char* buff );
 };
 
 #endif 

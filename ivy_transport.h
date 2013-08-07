@@ -10,7 +10,6 @@ extern char* ivy_p;
 
 char *plen =&ivy_buf[1];
 
-
 #define IvyTransportCheckFreeSpace(_dev,_) TRUE
 #define IvyTransportSizeOf(_dev, _payload) (_payload)
 #define IvyTransportPut1Byte(_dev,_x)  { \

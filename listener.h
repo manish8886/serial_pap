@@ -25,7 +25,8 @@ private:
   CReaderThread* reader; /*reader thread.*/
   CMsgProcThread* processor;/*processor thread.*/
   QSynchQueue<char*> msgbuffqueue;
-  QVector<CTelemetryMsg*>telemsgcontainer;
+  QSynchQueue<CTelemetryMsg*>telemsgcontainer;
+  QSynchQueue<CTelemetryMsg*>ivyqueue;
   QextSerialPort *pqtSerialPort;
   QTimer *ptimer;
 

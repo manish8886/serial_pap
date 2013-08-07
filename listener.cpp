@@ -9,9 +9,7 @@ ListenApp::ListenApp(int argc, char *argv[]):
   //QCoreApplication a(argc, argv);
   pqtSerialPort =NULL;
   ptimer = NULL;
-  
   PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 0};
-
   pqtSerialPort = new QextSerialPort ("/dev/ttyS0",settings,QextSerialPort::Polling);
 
   /*create timer but don't start it now*/
@@ -19,7 +17,7 @@ ListenApp::ListenApp(int argc, char *argv[]):
   
   //first create threads
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
-  processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer);
+  processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer,&ivyqueue);
 
 }
 ListenApp::~ListenApp(){

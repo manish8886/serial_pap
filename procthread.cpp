@@ -10,6 +10,9 @@
 #define GET_MSG_LEN(buffer,start)    ((buffer[start+1]))
 #define GET_MSG_ID(buffer,start)    ((buffer[start+3]))
 #define GET_MSG_PTR(buffer,start)   (&(buffer[start+MSG_HEADER_LEN]))
+#define GET_IVY_PAYLOAD_PTR(buffer,start)   (&(buffer[start+IvyMsg::MARKERBYTES-1]))
+
+
 /*
   Message Format:
   ----------------------------------------------------------------------------------------
@@ -36,7 +39,6 @@ bool CMsgProcThread::verifychecksum(const char* buffer){
     checksum_b+=checksum_a;
   }
   
-    
   ck_a = buffer[i++];
   ck_b = buffer[i++];
 
@@ -50,31 +52,61 @@ bool CMsgProcThread::verifychecksum(const char* buffer){
   }
   return true;
 }
-void CMsgProcThread::processmsg(const  char* buffer){
+void CMsgProcThread::processmsg( char* buffer){
   if(buffer==NULL)
     return;
   int i=0;
   while(i<MAX_BYTE){
-    char data = buffer[i];
-    if(data == CTelemetryMsg::STX){
-      int msg_len = GET_MSG_LEN(buffer,i);
-      if(verifychecksum(&buffer[i])){
-	CTelemetryMsg* pmsg = CMsgFactory::CreateMsg(GET_MSG_ID(buffer,i),msg_len,GET_MSG_PTR(buffer,i));
-	if(pmsg==NULL){
-	  std::cout <<"Couldn't form the message from message id:"<<(int)(buffer[i+3])<<std::endl;
-	}
-	else{
-	  pmsgContainer->push_back(pmsg);
-	  std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
-	}
+    char start_byte = buffer[i];
+    
+    CTelemetryMsg* pmsg=NULL;
+    bool isMsgValid=false;
+    int msg_len=0;
+    switch(start_byte){
+    case CMsg::STX:{
+      isMsgValid = verifychecksum(&buffer[i]);
+      msg_len = GET_MSG_LEN(buffer,i);
+      if(isMsgValid){
+	pmsg = CMsgFactory::CreateMsg(GET_MSG_ID(buffer,i),msg_len,GET_MSG_PTR(buffer,i));
       }
-      i+=msg_len;
-    }else{
-      i++;
+      
+      if(pmsg){
+	pmsgContainer->enqueue(pmsg);
+	std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
+
+      }else{
+	std::cout <<"Couldn't form the message from message id:"<<(int)(buffer[i+3])<<std::endl;
+      }
+
     }
+      break;
+    case CMsg::IVY_START:{
+      isMsgValid = IvyMsg::verifyMsg(&buffer[i]);
+      msg_len = buffer[i+1];
+      if(isMsgValid){
+	pmsg = CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
+      }
+      
+      if(pmsg){
+	pivymsgqueue->enqueue(pmsg);
+	std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
+      }else{
+	//std::cout <<"Couldn't form the message from message id:"<<"IVY_ID"<<std::endl;
+      }
+      
+    }
+      break;
+    default:
+      break;
+      
+    }
+    
+    isMsgValid?(i+=msg_len):(i++);
   }
   return;
 }
+
+
 
 void CMsgProcThread::run(){
   while(bstop==false){

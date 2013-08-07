@@ -1,3 +1,5 @@
+#include <QtCore/QDebug>
+#include <iostream>
 #include "telemsg.h"
 #include "messages.h"
 GPSMsg::GPSMsg(){
@@ -24,46 +26,69 @@ quint8 GPSMsg::getmsgid(){
   return msg_id;
 }
 
+void CMsg::BigToLittle(char* buff, unsigned int nbytes){
+  
+  int start =0;
+  int end = nbytes-1;
+  while(start < end){
+    int temp = buff[start];
+    buff[start]=buff[end];
+    buff[end]=temp;
+    start++;
+    end--;
+  }
+  
+}
 
-GPSMsg::GPSMsg(const char* buff){
-  const char* temp = buff;
+GPSMsg::GPSMsg( char* buff){
+  //copy the buffer in the msgbuffer
+  msgbuffer = new char[msg_len];
+  memcpy(msgbuffer,buff,msg_len);
+
   gps_mode=buff[0];
   buff+=sizeof(gps_mode);
 
+  BigToLittle(buff,sizeof(gps_utm_east));
   gps_utm_east= ((quint32* )buff)[0] ;
-  buff+=sizeof(quint32);
+  buff+=sizeof(gps_utm_east);
 
+  BigToLittle(buff,sizeof(gps_utm_north));
   gps_utm_north=((quint32* )buff)[0];
-  buff+=sizeof(quint32);
+  buff+=sizeof(gps_utm_north);
 
+  BigToLittle(buff,sizeof(gps_course));
   gps_course=((quint16*)buff)[0];
-  buff+=sizeof(quint16);
+  buff+=sizeof(gps_course);
 
+  BigToLittle(buff,sizeof(gps_alt));
   gps_alt=((quint32* )buff)[0];
-  buff+=sizeof(quint32);
+  buff+=sizeof(gps_alt);
 
+  BigToLittle(buff,sizeof(gps_speed));
   gps_speed=((quint16*)buff)[0];
-  buff+=sizeof(quint16);
+  buff+=sizeof(gps_speed);
 
+  BigToLittle(buff,sizeof(gps_climb));
   gps_climb=((quint16*)buff)[0];
-  buff+=sizeof(quint16);
+  buff+=sizeof(gps_climb);
 
-
+  BigToLittle(buff,sizeof(gps_week));
   gps_week=((quint16*)buff)[0];
-  buff+=sizeof(quint16);
+  buff+=sizeof(gps_week);
 
+  BigToLittle(buff,sizeof(gps_tow));
   gps_tow=((quint32* )buff)[0];
-  buff+=sizeof(quint32);
+  buff+=sizeof(gps_tow);
 
+  BigToLittle(buff,sizeof(gps_utm_zone));
   gps_utm_zone=((quint8* )buff)[0];
-  buff+=sizeof(quint8);
+  buff+=sizeof(gps_utm_zone);
   
+  BigToLittle(buff,sizeof(gps_nb_err));
   gps_nb_err=((quint8* )buff)[0];
-  buff+=sizeof(quint8);
+  buff+=sizeof(gps_nb_err);
 
-  //copy the buffer in the msgbuffer
-  msgbuffer = new char[msg_len];
-  memcpy(msgbuffer,temp,msg_len);
+
   
 }
 int GPSMsg::getBufferedMsg(char** buffer){
@@ -155,7 +180,7 @@ IRMsg::IRMsg(){
   ir_vertical=0;
   msgbuffer=NULL;
 }
-IRMsg::IRMsg(const char* buff){
+IRMsg::IRMsg( char* buff){
   (void)buff;
 }
 
@@ -174,3 +199,55 @@ QString IRMsg::getPrettyMsg(){
   QString result;
   return result;
 }
+
+IvyMsg::IvyMsg(){
+  msgbuffer=NULL;
+  msg_len =0;
+}
+
+IvyMsg::IvyMsg(char* buffer,int len){
+  msgbuffer = new char[len];
+  memcpy(msgbuffer,buffer,len);
+  msg_len = len;
+}
+
+IvyMsg::~IvyMsg(){
+  if(msgbuffer)
+    delete [] msgbuffer;
+
+}
+bool IvyMsg::verifyMsg( const char* buffer){
+  int len=0;
+  if(buffer[0]!=CMsg::IVY_START)
+    return false;
+  len = buffer[1];
+  buffer+=(len-1);
+  if(*buffer != CMsg::IVY_END){
+    qDebug()<< "couldn't find end marker in the ivy message \n"; 
+    return false;
+  }
+  return true;
+}
+
+int IvyMsg::getBufferedMsg(char** buffer){
+  *buffer=NULL;
+  if(msgbuffer==NULL)
+    return 0;
+  *buffer =  new char[msg_len];
+  memcpy(*buffer,msgbuffer,msg_len);
+  return msg_len;
+}
+
+QString IvyMsg::getPrettyMsg(){
+  QString str("");
+  if(msgbuffer)
+    str+=msgbuffer;
+  return str;
+}
+quint8 IvyMsg::getmsglength(){
+  return msg_len;
+}
+quint8 IvyMsg::getmsgid(){
+  return 0;
+}
+

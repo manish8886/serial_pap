@@ -6,9 +6,11 @@
 class CMsgProcThread:public QThread{
   Q_OBJECT
  public:
-  CMsgProcThread(QSynchQueue<char*>*qu, QVector<CTelemetryMsg*>* pmsgvec):
+  CMsgProcThread(QSynchQueue<char*>*qu, QSynchQueue<CTelemetryMsg*>* pmsgvec,
+		 QSynchQueue<CTelemetryMsg*>* pivyqueue):
   pbufferedQueue(qu),
-    pmsgContainer(pmsgvec)
+    pmsgContainer(pmsgvec),
+    pivymsgqueue(pivyqueue)
     {
       bstop=false;
     }
@@ -21,7 +23,7 @@ class CMsgProcThread:public QThread{
   void run();
  private:
   bool bstop;
-  void processmsg(const  char* buffer);
+  void processmsg( char* buffer);
   /*this function always assumes that the data ponited by
     buffer always has STX as it starts byte. This function check
     for validity of the message by verfying the checksum of the buffer.
@@ -31,7 +33,8 @@ class CMsgProcThread:public QThread{
   //A shared queue to put the incoming message from
   //serial port.
   QSynchQueue< char*>* pbufferedQueue;
-  QVector< CTelemetryMsg*>* pmsgContainer;
+  QSynchQueue< CTelemetryMsg*>* pmsgContainer;
+  QSynchQueue< CTelemetryMsg*>* pivymsgqueue;
 }; 
 
 

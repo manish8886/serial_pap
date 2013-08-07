@@ -1,7 +1,7 @@
 #include "messages.h"
 #include "msgfactory.h"
 #include "telemsg.h"
-CTelemetryMsg* CMsgFactory::CreateMsg(quint8 msg_id,quint8 len,const char* buff )
+CTelemetryMsg* CMsgFactory::CreateMsg(quint8 msg_id,quint8 len, char* buff )
 {
   CTelemetryMsg* pmsg=NULL;
   (void)len;
@@ -11,6 +11,10 @@ CTelemetryMsg* CMsgFactory::CreateMsg(quint8 msg_id,quint8 len,const char* buff 
     break;
   case DL_IR_SENSORS:
     pmsg = new IRMsg(buff);
+    break;
+  case DL_IVY_MSG_ID:
+    /*IVY_START+LEN+PAYLOAD+IVY_END*/
+    pmsg = new IvyMsg(&buff[IvyMsg::MARKER_BYTES-1],len-IvyMsg::MARKER_BYTES);
     break;
   default:
     pmsg = NULL;
