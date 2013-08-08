@@ -88,8 +88,6 @@ GPSMsg::GPSMsg( char* buff){
   gps_nb_err=((quint8* )buff)[0];
   buff+=sizeof(gps_nb_err);
 
-
-  
 }
 int GPSMsg::getBufferedMsg(char** buffer){
   if(msgbuffer==NULL){
