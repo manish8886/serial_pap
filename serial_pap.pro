@@ -10,13 +10,16 @@ TARGET = serial_pap
 TEMPLATE = app
 
 
-SOURCES +=  enumport.cpp \
- listener.cpp \
- main.cpp \
- msg.cpp \
- msgfactory.cpp \
- reader.cpp \
- procthread.cpp
+SOURCES +=     enumport.cpp \
+   ivy_dl_thread.cpp \
+   listener.cpp \
+   main.cpp \
+   msg.cpp \
+   msgfactory.cpp \
+   reader.cpp \
+   procthread.cpp \
+   ivy_init.cpp
+
 
 
 
@@ -31,22 +34,24 @@ SOURCES +=  enumport.cpp \
 
 CONFIG += extserialport
 
-#unix:!macx:!symbian: LIBS += -livy
+unix:!macx:!symbian: LIBS += -livy
 
 HEADERS += \
     common.h \
+    ivy_dl_thread.h \
+    ivy_transport.h \
     listener.h \
     messages.h \
     msgfactory.h \
     procthread.h \
     reader.h \
     telemsg.h \
-    synchqueue.h
+    synchqueue.h \
 
 QMAKE_CXXFLAGS += -funsigned-char 
 QMAKE_CXXFLAGS += -g3
     
 DEFINES+=DOWNLINK
-DEFINES += QT_NO_DEBUG
+#DEFINES += QT_NO_DEBUG
 #DEFINES += QT_NO_DEBUG_OUTPUT
 

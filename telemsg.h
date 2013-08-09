@@ -15,7 +15,7 @@ class CMsg{
 class CTelemetryMsg:public CMsg{
  public: 
   static  const quint8 STX=0x99;
-  static  const quint8 AC_ID=0x05;
+
  public:
   virtual ~CTelemetryMsg(){
     if(msgbuffer)

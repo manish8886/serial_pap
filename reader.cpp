@@ -23,6 +23,7 @@ void CReaderThread::readPort(){
       bzero(buffer,MAX_BYTE);
     }
   }
+  std::cout << std::endl;
   std::cout << "serial port is closed."<<std::endl;
   std::cout << "reader thread is now exiting"<<std::endl;
   return;

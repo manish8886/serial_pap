@@ -58,7 +58,6 @@ void CMsgProcThread::processmsg( char* buffer){
   int i=0;
   while(i<MAX_BYTE){
     char start_byte = buffer[i];
-    
     CTelemetryMsg* pmsg=NULL;
     bool isMsgValid=false;
     int msg_len=0;
@@ -111,9 +110,13 @@ void CMsgProcThread::processmsg( char* buffer){
 void CMsgProcThread::run(){
   while(bstop==false){
     char* msgbuff = pbufferedQueue->dequeue();
+    std::cout <<"i am not sleeping" <<std::endl;
+    if(msgbuff==NULL)
+      continue;
     processmsg(msgbuff);
     delete [] msgbuff;
   }
+  std::cout<<"now processor thread is exiting" << std::endl;
   return;
 }
 

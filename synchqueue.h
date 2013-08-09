@@ -3,70 +3,82 @@
 #include <QtCore/QQueue>
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
-template<class T>
-class QSynchQueue{
-  Q_OBJECT
+#include <iostream>
+template<class T1>
+class QSynchQueue:public QObject{
  public:
   QSynchQueue();
+  ~QSynchQueue();
  public:
-  void enqueue(const T& data);
-  T dequeue();
+  void enqueue(const T1& data);
+  T1 dequeue();
   /*  T& head();
       const T& head()const;*/
-
-  public Q_SLOTS:
-  void makequnonblocking();
+  void makequeuenonblocking();
  private:
-  QQueue<T>container;
+  QQueue<T1>container;
   static const int MAX_SIZE; 
   QWaitCondition cv;
   QMutex mutex;
   bool canBlock;
 };
-template<class T>
-const int QSynchQueue<T>::MAX_SIZE = 256;
+template<class T1>
+const int QSynchQueue<T1>::MAX_SIZE = 256;
 
-template<class T>
-QSynchQueue<T>::QSynchQueue(){
+template<class T1>
+QSynchQueue<T1>::QSynchQueue(){
   canBlock=true;
 }
 
-template<class T>
-QSynchQueue<T>::~QSynchQueue(){
-  
+template<class T1>
+QSynchQueue<T1>::~QSynchQueue(){
+  cv.wakeAll();
 }
 
-template<class T>
-QSynchQueue<T>::makequeuenonblocking(){
+template<class T1>
+void QSynchQueue<T1>::makequeuenonblocking(){
   /*check if someone is already blocked on the queue. if
    that's the case wakep up all thread*/
   mutex.lock();
   canBlock=false;
   cv.wakeAll();
   mutex.unlock();
-
 }
 
 
 
-template<class T>
-void QSynchQueue<T>::enqueue(const T& data){
+template<class T1>
+void QSynchQueue<T1>::enqueue(const T1& data){
   mutex.lock();
-  while(container.size()==MAX_SIZE){
+  while(container.size()==MAX_SIZE && canBlock){
     cv.wait(&mutex);
+    std::cout << "I just woke up" << std::endl;
   }
+
+  if(container.size()==MAX_SIZE){
+    /*I woke up and containes is still full.BBYe */
+    mutex.unlock();
+    return;
+  }
+
   container.enqueue(data);
   if(container.size()==1)//if contanier has atleast one item
     cv.wakeAll();
   mutex.unlock();
 }
 
-template<class T>
-T QSynchQueue<T>::dequeue(){
-  T data;
+template<class T1>
+T1 QSynchQueue<T1>::dequeue(){
+  T1 data;
   mutex.lock();
-  while(container.size()==0){
+  while(container.size()==0 && canBlock){
     cv.wait(&mutex);
+  }
+  if(container.size()==0){
+    /*I woke up and containes is still empty.
+      Therefore, can't do much.*/
+    mutex.unlock();
+    return NULL;
   }
   data = container.dequeue();
   if(container.size()==MAX_SIZE-1)//if contanier has atleast one item

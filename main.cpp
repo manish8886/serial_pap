@@ -3,7 +3,7 @@
 #include "listener.h"
 int main(int argc, char *argv[]){
   int baudrate=9600;
-  int time = 3000*60;// i minute
+  int time = 1000*60;// i minute
   if(argc>1+2){
     std::cout<<"Too many arguments"<<std::endl;
   }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "ivy_init.h"
 #include "listener.h"
 
 extern int enumerateserialports();
@@ -11,14 +12,15 @@ ListenApp::ListenApp(int argc, char *argv[]):
   ptimer = NULL;
   PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 0};
   pqtSerialPort = new QextSerialPort ("/dev/ttyS0",settings,QextSerialPort::Polling);
-
+  
   /*create timer but don't start it now*/
   ptimer = new QTimer();
   
   //first create threads
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
   processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer,&ivyqueue);
-
+   ivy_transport_init();
+  
 }
 ListenApp::~ListenApp(){
   if(pqtSerialPort)
@@ -73,13 +75,17 @@ void ListenApp::closeapp(){
   if(ptimer){
     ptimer->stop();
   }
-
+  
+  /*Make every queue non blocking*/
+  msgbuffqueue.makequeuenonblocking();
+  ivyqueue.makequeuenonblocking();
+  telemsgcontainer.makequeuenonblocking();
   /*wait for finshing of both threads*/
+
   if(reader)
     reader->wait();
   if(processor){
-    processor->stop_processing();
-    processor->wait(100);
+    processor->wait();
   }
   exit(0);
 }

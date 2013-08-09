@@ -210,8 +210,6 @@ IvyMsg::IvyMsg(char* buffer,int len){
 }
 
 IvyMsg::~IvyMsg(){
-  if(msgbuffer)
-    delete [] msgbuffer;
 
 }
 bool IvyMsg::verifyMsg( const char* buffer){
