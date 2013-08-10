@@ -88,7 +88,7 @@ void CMsgProcThread::processmsg( char* buffer){
       
       if(pmsg){
 	pivymsgqueue->enqueue(pmsg);
-	std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
+	//std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
       }else{
 	//std::cout <<"Couldn't form the message from message id:"<<"IVY_ID"<<std::endl;
       }
@@ -110,7 +110,6 @@ void CMsgProcThread::processmsg( char* buffer){
 void CMsgProcThread::run(){
   while(bstop==false){
     char* msgbuff = pbufferedQueue->dequeue();
-    std::cout <<"i am not sleeping" <<std::endl;
     if(msgbuff==NULL)
       continue;
     processmsg(msgbuff);

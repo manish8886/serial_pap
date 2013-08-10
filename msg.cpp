@@ -217,6 +217,9 @@ bool IvyMsg::verifyMsg( const char* buffer){
   if(buffer[0]!=CMsg::IVY_START)
     return false;
   len = buffer[1];
+  
+  if(len<3)
+    return false;
   buffer+=(len-1);
   if(*buffer != CMsg::IVY_END){
     qDebug()<< "couldn't find end marker in the ivy message \n"; 

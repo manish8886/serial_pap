@@ -7,10 +7,14 @@
 #include <QtExtSerialPort/qextserialenumerator.h>
 #include <QtCore/QSemaphore>
 #include <QtCore/QVector>
+
+#include "ivy_dl_thread.h"
+#include "ivy_app.h"
 #include "reader.h"
 #include "procthread.h"
 #include "telemsg.h"
 #include "synchqueue.h"
+
 class ListenApp:public QCoreApplication{
     Q_OBJECT
 public:
@@ -22,8 +26,10 @@ public:
  signals:
   void serial_port_closed();
 private:
+  CIvyDlThread* ivy_dl_thread; /*reader thread.*/
   CReaderThread* reader; /*reader thread.*/
   CMsgProcThread* processor;/*processor thread.*/
+  CIVY_APP* pivyloopthread; 
   QSynchQueue<char*> msgbuffqueue;
   QSynchQueue<CTelemetryMsg*>telemsgcontainer;
   QSynchQueue<CTelemetryMsg*>ivyqueue;

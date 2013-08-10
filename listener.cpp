@@ -1,6 +1,7 @@
+#include <Ivy/ivy.h>
 #include <iostream>
-#include "ivy_init.h"
 #include "listener.h"
+
 
 extern int enumerateserialports();
 extern void setserialconf(PortSettings& portsettings);
@@ -19,8 +20,8 @@ ListenApp::ListenApp(int argc, char *argv[]):
   //first create threads
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
   processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer,&ivyqueue);
-   ivy_transport_init();
-  
+  ivy_dl_thread = new CIvyDlThread(&ivyqueue);  
+  pivyloopthread = new CIVY_APP();
 }
 ListenApp::~ListenApp(){
   if(pqtSerialPort)
@@ -53,7 +54,10 @@ bool ListenApp::setup(int brate,int time){
   
   /*connect processor thread slot to serial port closed signal*/
   connect(this,SIGNAL(serial_port_closed()),processor,SLOT(stop_processing()));
-  
+  /*connect ivy downlink thread slot to serial port closed signal*/
+  connect(this,SIGNAL(serial_port_closed()),ivy_dl_thread,SLOT(stop_processing()));
+  /*connect ivy main loop  thread slot to serial port closed signal*/
+  connect(this,SIGNAL(serial_port_closed()),pivyloopthread,SLOT(stop_processing()));
   /*set the timer interval*/
   ptimer->setInterval(time);
   /*start timer*/
@@ -63,19 +67,21 @@ bool ListenApp::setup(int brate,int time){
   reader->start();
   /*start processor*/
   processor->start();
- 
+  pivyloopthread->start();
+  ivy_dl_thread->start();
   return true;
 }
 void ListenApp::closeapp(){
   std::cout<< "app is being closed";
-  emit serial_port_closed();
   if(pqtSerialPort){
     pqtSerialPort->close();
   }
   if(ptimer){
     ptimer->stop();
   }
-  
+
+  emit serial_port_closed();
+
   /*Make every queue non blocking*/
   msgbuffqueue.makequeuenonblocking();
   ivyqueue.makequeuenonblocking();
@@ -86,6 +92,13 @@ void ListenApp::closeapp(){
     reader->wait();
   if(processor){
     processor->wait();
+  }
+  if(ivy_dl_thread){
+    ivy_dl_thread->wait();
+  }
+  
+  if(pivyloopthread){
+    pivyloopthread->wait();
   }
   exit(0);
 }

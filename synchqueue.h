@@ -52,7 +52,6 @@ void QSynchQueue<T1>::enqueue(const T1& data){
   mutex.lock();
   while(container.size()==MAX_SIZE && canBlock){
     cv.wait(&mutex);
-    std::cout << "I just woke up" << std::endl;
   }
 
   if(container.size()==MAX_SIZE){

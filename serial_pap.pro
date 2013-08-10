@@ -18,8 +18,8 @@ SOURCES +=     enumport.cpp \
    msgfactory.cpp \
    reader.cpp \
    procthread.cpp \
-   ivy_init.cpp
-
+   ivy_init.cpp \
+   ivy_app.cpp
 
 
 
@@ -47,11 +47,12 @@ HEADERS += \
     reader.h \
     telemsg.h \
     synchqueue.h \
+    ivy_app.h
 
 QMAKE_CXXFLAGS += -funsigned-char 
 QMAKE_CXXFLAGS += -g3
     
 DEFINES+=DOWNLINK
-#DEFINES += QT_NO_DEBUG
-#DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_NO_DEBUG
+DEFINES += QT_NO_DEBUG_OUTPUT
 
