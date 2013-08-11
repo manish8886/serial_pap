@@ -9,7 +9,7 @@
 #include <QtCore/QVector>
 
 #include "ivy_dl_thread.h"
-#include "ivy_app.h"
+#include "ivythread.h"
 #include "reader.h"
 #include "procthread.h"
 #include "telemsg.h"
@@ -29,10 +29,12 @@ private:
   CIvyDlThread* ivy_dl_thread; /*reader thread.*/
   CReaderThread* reader; /*reader thread.*/
   CMsgProcThread* processor;/*processor thread.*/
-  CIVY_APP* pivyloopthread; 
+  IvyThread* pivyloopthread; 
   QSynchQueue<char*> msgbuffqueue;
   QSynchQueue<CTelemetryMsg*>telemsgcontainer;
   QSynchQueue<CTelemetryMsg*>ivyqueue;
+  QSynchQueue<char*>uplinkmsgqueue;
+    
   QextSerialPort *pqtSerialPort;
   QTimer *ptimer;
 

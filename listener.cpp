@@ -21,7 +21,8 @@ ListenApp::ListenApp(int argc, char *argv[]):
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
   processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer,&ivyqueue);
   ivy_dl_thread = new CIvyDlThread(&ivyqueue);  
-  pivyloopthread = new CIVY_APP();
+
+  pivyloopthread = new IvyThread(&uplinkmsgqueue);
 }
 ListenApp::~ListenApp(){
   if(pqtSerialPort)
@@ -86,6 +87,7 @@ void ListenApp::closeapp(){
   msgbuffqueue.makequeuenonblocking();
   ivyqueue.makequeuenonblocking();
   telemsgcontainer.makequeuenonblocking();
+  uplinkmsgqueue.makequeuenonblocking();
   /*wait for finshing of both threads*/
 
   if(reader)

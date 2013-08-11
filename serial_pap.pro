@@ -18,8 +18,7 @@ SOURCES +=     enumport.cpp \
    msgfactory.cpp \
    reader.cpp \
    procthread.cpp \
-   ivy_init.cpp \
-   ivy_app.cpp \ 
+   ivythread.cpp \ 
   dl_transport.cpp
 
 
@@ -47,7 +46,7 @@ HEADERS += \
     reader.h \
     telemsg.h \
     synchqueue.h \
-    ivy_app.h \
+    ivythread.h \
     downlink_transport.h
 
 QMAKE_CXXFLAGS += -funsigned-char 

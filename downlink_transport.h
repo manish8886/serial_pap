@@ -55,7 +55,7 @@ enum DownlinkDataType {
   define now will be same as Paparazzi type of message with STX and lene 
   at  start and crc1 and crc2 at the end of the message.
 */
-struct  DownlinkTransport
+class  DownlinkTransport
 {
   /*
  *  Pprz frame:

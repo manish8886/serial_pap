@@ -2,9 +2,7 @@
 #include <strings.h>
 #include "telemsg.h"
 #include "downlink_transport.h"
-
 #include "synchqueue.h"
-
 
 uint8_t DownlinkTransport::SizeOf (void *impl, uint8_t size){
   (void)impl;
