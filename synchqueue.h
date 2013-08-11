@@ -3,9 +3,9 @@
 #include <QtCore/QQueue>
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
-#include <iostream>
+
 template<class T1>
-class QSynchQueue:public QObject{
+class QSynchQueue{
  public:
   QSynchQueue();
   ~QSynchQueue();

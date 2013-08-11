@@ -7,8 +7,9 @@ class CMsg{
  public:
   enum estart_byte{STX=0x99,IVY_START=0x7E};
   enum end_byte{IVY_END=0x7F};
- protected:
-  void BigToLittle(char* buff, unsigned int nbytes);
+ public:
+  static void BigToLittle(char* buff, unsigned int nbytes);
+  static void LittleToBig(char* buff, unsigned int nbytes);
 };
 
 

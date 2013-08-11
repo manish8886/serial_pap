@@ -11,16 +11,16 @@ TEMPLATE = app
 
 
 SOURCES +=     enumport.cpp \
-   ivy_dl_thread.cpp \
-   listener.cpp \
-   main.cpp \
-   msg.cpp \
+    ivy_dl_thread.cpp \
+    listener.cpp \
+    main.cpp \
+    msg.cpp \
    msgfactory.cpp \
    reader.cpp \
    procthread.cpp \
    ivy_init.cpp \
-   ivy_app.cpp
-
+   ivy_app.cpp \ 
+  dl_transport.cpp
 
 
 #HEADERS  += mainwindow.h
@@ -47,7 +47,8 @@ HEADERS += \
     reader.h \
     telemsg.h \
     synchqueue.h \
-    ivy_app.h
+    ivy_app.h \
+    downlink_transport.h
 
 QMAKE_CXXFLAGS += -funsigned-char 
 QMAKE_CXXFLAGS += -g3

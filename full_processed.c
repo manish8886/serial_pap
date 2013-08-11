@@ -10,11 +10,11 @@ int main(){
 	    downlink_nb_bytes += ((0+1+4+4+2+4+2+2+2+4+1+1 +2)+4);; 
 	    downlink_nb_msgs++; 
 	    UART1Transmit(0x99); 
-	    /* /\* uint8_t msg_len = ((0+1+4+4+2+4+2+2+2+4+1+1 +2)+4);  *\/ */
-	    /* /\* UART1Transmit(msg_len);  *\/ */
-	    /* /\* ck_a = msg_len;  *\/ */
-	    /* /\* ck_b = msg_len; *\/ */
-	    /* /\* ck_a += AC_ID; ck_b += ck_a; UART1Transmit */ */(AC_ID); 
+	     uint8_t msg_len = ((0+1+4+4+2+4+2+2+2+4+1+1 +2)+4); 
+	     UART1Transmit(msg_len);  
+	     ck_a = msg_len;  
+	    ck_b = msg_len;
+	    ck_a += AC_ID; ck_b += ck_a; UART1Transmit(AC_ID); 
 	    ck_a += 8; ck_b += ck_a; 
 	    UART1Transmit(8);  
 

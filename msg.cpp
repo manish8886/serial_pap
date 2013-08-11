@@ -39,6 +39,10 @@ void CMsg::BigToLittle(char* buff, unsigned int nbytes){
   }
   
 }
+void CMsg::LittleToBig(char* buff, unsigned int nbytes){
+  
+  
+}
 
 GPSMsg::GPSMsg( char* buff){
   //copy the buffer in the msgbuffer
