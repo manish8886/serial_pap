@@ -76,7 +76,7 @@ public:
   int CheckFreeSpace(void *impl, uint8_t size);
   void PutBytes(void *impl, enum DownlinkDataType data_type, uint8_t len, const void *bytes);
 
-  void StartMessage(void *impl, char *name, uint8_t msg_id, uint8_t payload_len);
+  void StartMessage(void *impl,const char *name, uint8_t msg_id, uint8_t payload_len);
   void EndMessage(void *impl);
   void Overrun(void *impl);
   void CountBytes(void *impl, uint8_t len);

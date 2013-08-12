@@ -77,7 +77,7 @@ void DownlinkTransport::PutBytes(void *impl, enum DownlinkDataType data_type, ui
   memcpy(&buffer[cur_index],data,len);
   cur_index+=len;
 }
-void DownlinkTransport::StartMessage(void *impl, char *name, uint8_t msg_id, uint8_t payload_len){
+void DownlinkTransport::StartMessage(void *impl, const char *name, uint8_t msg_id, uint8_t payload_len){
   (void)impl;
   (void)payload_len;
   (void)name;
