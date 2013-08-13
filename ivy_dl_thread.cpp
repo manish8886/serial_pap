@@ -4,11 +4,10 @@
 void CIvyDlThread::run(){
   while(!bstop){
     char* buffer=NULL;
-    int len=0;
     CTelemetryMsg *pmsg = pivymsgqueue->dequeue();
     if(pmsg==NULL)
       continue;
-    len = pmsg->getBufferedMsg(&buffer);
+    pmsg->getBufferedMsg(&buffer);
     if(buffer==NULL)
       continue;
      IvySendMsg("%s",buffer);
