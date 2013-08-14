@@ -23,7 +23,7 @@ static quint64 mod_value(QString string,qint8* psign, bool* ok){
   qint64 value = string.toLongLong(ok);
   (value<0) ? (*psign = -1) : (*psign = 1);
   value*=(*psign)	   ;
-  if(value>0) std::cout << "incorrect conversion of type" << std::endl;
+  if(value<0) std::cout << "incorrect conversion of type" << std::endl;
   return value;
 }
 
@@ -146,26 +146,13 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
 
 static void on_DL_PING(IvyClientPtr app __attribute__ ((unused)),
 		       void *user_data ,
-		       int argc , char *argv[]){
-
-  int index = 0;
-  QString qstring;
+		       int argc , char *argv[] __attribute__ ((unused))){
 
   DownlinkTransport *pchannel = (DownlinkTransport*)user_data;
-
-  
-  if(argc!=2){
+  if(argc!=1){
     echo_msg_arg_error("DL_PING");
   }
-  qstring = argv[index++];
-  /*nbytes = qstring.toInt(&ok);
-  if(ok==false){
-    echo_msg_conversion_error("bytes","int");
-  }*/
-  qstring = argv[index++];
-  if(qstring!="DL_PING"){
-        echo_msg_arg_error("DL_PING");
-  }
+
   /*DL_PING doesn't have any important number of arguments*/
   DOWNLINK_SEND_PING(pchannel);
   
@@ -174,7 +161,7 @@ static void on_DL_PING(IvyClientPtr app __attribute__ ((unused)),
 static void on_DL_ACINFO(IvyClientPtr app __attribute__ ((unused)),
 			 void *user_data ,
 			 int argc , char *argv[]){
-  bool ok=false;
+
   int index = 0,nbytes=0;
   QString qstring;
   char* buffer;
@@ -190,21 +177,13 @@ static void on_DL_ACINFO(IvyClientPtr app __attribute__ ((unused)),
     DL_TYPE_UINT8
   };
   
-  if(argc!=2){
+  if(argc!=9){
     echo_msg_arg_error("DL_ACINFO");
   }
-  qstring = argv[index++];
-  nbytes = qstring.toInt(&ok);
-  if(ok==false){
-    echo_msg_conversion_error("bytes","int");
-  }
-  qstring = argv[index++];
-  if(qstring!="DL_ACINFO"){
-    echo_msg_arg_error("DL_ACINFO");
-  }
-   
-  buffer = new char[nbytes];
 
+  nbytes=2+4+4+4+4+2+2+1;
+  buffer = new char[nbytes];
+  index = 1;
   if(fill_buffer_array(&argv[index],typev,sizeof(typev)/sizeof(DownlinkDataType),buffer,nbytes)==false){
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
   }
@@ -260,7 +239,6 @@ static void on_DL_ACINFO(IvyClientPtr app __attribute__ ((unused)),
 static void on_DL_SETTING(IvyClientPtr app __attribute__ ((unused)),
 			  void *user_data ,
 			  int argc , char *argv[]){
-  bool ok=false;
   int index = 0,nbytes=0;
   QString qstring;
   char* buffer;
@@ -271,9 +249,10 @@ static void on_DL_SETTING(IvyClientPtr app __attribute__ ((unused)),
     DL_TYPE_FLOAT
   };
   
-  if(argc!=2){
+  if(argc!=4){
     echo_msg_arg_error("DL_SETTING");
   }
+  /*
   qstring = argv[index++];
   nbytes = qstring.toInt(&ok);
   if(ok==false){
@@ -282,11 +261,11 @@ static void on_DL_SETTING(IvyClientPtr app __attribute__ ((unused)),
   qstring = argv[index++];
   if(qstring!="DL_SETTING"){
     echo_msg_arg_error("DL_SETTING");
-  }
+    }*/
    
-  
+  nbytes=1+1+4;
   buffer = new char[nbytes];
-
+  index=1;
   if(fill_buffer_array(&argv[index],typev,sizeof(typev)/sizeof(DownlinkDataType),buffer,nbytes)==false){
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
   }
@@ -320,7 +299,6 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
 			      int argc __attribute__ ((unused)), char *argv[]){
 
 
-  bool ok=false;
   int index = 0,nbytes=0;
   QString qstring;
   char* buffer;
@@ -330,9 +308,10 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
     DL_TYPE_UINT8,
   };
   
-  if(argc!=2){
+  if(argc!=3){
     echo_msg_arg_error("DL_GET_SETTING");
   }
+  /*
   qstring = argv[index++];
   nbytes = qstring.toInt(&ok);
   if(ok==false){
@@ -341,11 +320,11 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
   qstring = argv[index++];
   if(qstring!="GET_DL_SETTING"){
     echo_msg_arg_error("DL_GET_SETTING");
-  }
+    }*/
    
-  
+  nbytes = 1+1;
   buffer = new char[nbytes];
-
+  index=1;
   if(fill_buffer_array(&argv[index],typev,sizeof(typev)/sizeof(DownlinkDataType),buffer,nbytes)==false){
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
   }
@@ -371,7 +350,6 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
 static void on_DL_BLOCK(IvyClientPtr app __attribute__ ((unused)),
 			void *user_data,
 			int argc, char *argv[]){
-  bool ok=false;
   int index = 0,nbytes=0;
   QString qstring;
   char* buffer;
@@ -381,9 +359,10 @@ static void on_DL_BLOCK(IvyClientPtr app __attribute__ ((unused)),
     DL_TYPE_UINT8,
   };
   
-  if(argc!=2){
+  if(argc!=3){
     echo_msg_arg_error("DL_BLOCK");
   }
+  /*
   qstring = argv[index++];
   nbytes = qstring.toInt(&ok);
   if(ok==false){
@@ -392,11 +371,11 @@ static void on_DL_BLOCK(IvyClientPtr app __attribute__ ((unused)),
   qstring = argv[index++];
   if(qstring!="BLOCK"){
     echo_msg_arg_error("DL_BLOCK");
-  }
+    }*/
    
-  
+  nbytes=1+1;
   buffer = new char[nbytes];
-
+  index=1;
   if(fill_buffer_array(&argv[index],typev,sizeof(typev)/sizeof(DownlinkDataType),buffer,nbytes)==false){
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
   }
@@ -414,7 +393,6 @@ static void on_DL_BLOCK(IvyClientPtr app __attribute__ ((unused)),
 		      &block_id,
 		      &ac_id);
   
-  
   delete [] buffer;
 
 
@@ -425,7 +403,6 @@ static void on_DL_MOVE_WP(IvyClientPtr app __attribute__ ((unused)),
 			  int argc __attribute__ ((unused)), char *argv[]){
 
   
-  bool ok=false;
   int index = 0,nbytes=0;
   QString qstring;
   char* buffer;
@@ -438,21 +415,12 @@ static void on_DL_MOVE_WP(IvyClientPtr app __attribute__ ((unused)),
     DL_TYPE_INT32,
   };
   
-  if(argc!=2){
-    echo_msg_arg_error("DL_MOVE_WP");
-  }
-  qstring = argv[index++];
-  nbytes = qstring.toInt(&ok);
-  if(ok==false){
-    echo_msg_conversion_error("bytes","int");
-  }
-  qstring = argv[index++];
-  if(qstring!="MOVE_WP"){
-    echo_msg_arg_error("MOVE_WP");
-  }
+
    
-  
+  nbytes=1+1+4+4+4;
   buffer = new char[nbytes];
+  index=1;
+
 
   if(fill_buffer_array(&argv[index],typev,sizeof(typev)/sizeof(DownlinkDataType),buffer,nbytes)==false){
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
@@ -499,7 +467,7 @@ void IvyThread::ivy_transport_init(void) {
 void IvyThread::sim_autopilot_init(void){
   void *ptr = &TransportChannel;
   IvyBindMsg(on_DL_PING, ptr, "^(\\S*) DL_PING");
-  IvyBindMsg(on_DL_ACINFO, ptr, "^(\\S*) DL_ACINFO (\\S*) (\\S*) (\\S* (\\S*) (\\S*) (\\S*)) (\\S*) (\\S*)");
+  IvyBindMsg(on_DL_ACINFO, ptr, "^(\\S*) DL_ACINFO (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
   IvyBindMsg(on_DL_SETTING,ptr, "^(\\S*) DL_SETTING (\\S*) (\\S*) (\\S*)");
   IvyBindMsg(on_DL_GET_SETTING,ptr, "^(\\S*) GET_DL_SETTING (\\S*) (\\S*)");
   IvyBindMsg(on_DL_BLOCK, ptr, "^(\\S*) BLOCK (\\S*) (\\S*)");

@@ -6,10 +6,6 @@
 
 uint8_t DownlinkTransport::SizeOf (void *impl, uint8_t size){
   (void)impl;
-  /**/
-  if(msg_len){
-    std::cout <<"error:previous msg is not finished"<<std::endl;
-  }
   msg_len= size+extra_bytes;
   return msg_len;
 }
@@ -108,7 +104,7 @@ void DownlinkTransport::EndMessage(void *impl){
   buffer[cur_index++]= ck_a;
   buffer[cur_index++]= ck_b;
   
-  if(cur_index != msg_len-1){
+  if(cur_index != msg_len){
     std::cout <<std::endl << "error: error in constructing the msg frame"<<std::endl;
   }
   /*copy the buffer in msg queue*/
