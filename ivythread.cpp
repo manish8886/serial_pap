@@ -6,7 +6,7 @@
 #include "common.h"
 #include "ivythread.h"
 #include "dl_protocol2.h"
-
+#include "generated/airframe.h"
 
 using namespace std;
 #ifdef __APPLE__
@@ -41,7 +41,6 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
       std::cout << "buffer overflowed"<<std::endl;
     }
     switch(typev[argv_index]){
-    case DL_TYPE_DOUBLE:
     case DL_TYPE_TIMESTAMP:
       echo_data_type_error("string","DL_TYPE_TIMESTAMP");
       break;
@@ -95,8 +94,6 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
     case DL_TYPE_INT16:{
       ob_size = sizeof(qint16);
       qint16* p = (qint16*)(&buffer[buffer_index]);
-      /*because these values are already unsigned we
-	need not be bother about the sign of the data*/
       *p=(qint16)(mod_value(argstring,&sign,&ok));
       *p *=sign;
       if(ok==false) echo_data_type_error("string","DL_TYPE_INT16");
@@ -105,8 +102,6 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
     case DL_TYPE_INT32:{
       ob_size = sizeof(qint32);
       qint32* p = (qint32*)(&buffer[buffer_index]);
-      /*because these values are already unsigned we
-	need not be bother about the sign of the data*/
       *p=(qint32)(mod_value(argstring,&sign,&ok));
       *p *=sign;
       if(ok==false) echo_data_type_error("string","DL_TYPE_INT32");
@@ -115,11 +110,9 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
     case DL_TYPE_INT64:{
       ob_size = sizeof(qint64);
       qint64* p = (qint64*)(&buffer[buffer_index]);
-      /*because these values are already unsigned we
-	need not be bother about the sign of the data*/
       *p=(qint64)(mod_value(argstring,&sign,&ok));
       *p *=sign;
-      if(ok==false) echo_data_type_error("string","DL_TYPE_INT8");
+      if(ok==false) echo_data_type_error("string","DL_TYPE_INT64");
     }
       break;
     case DL_TYPE_FLOAT:{
@@ -128,9 +121,17 @@ static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],u
 	to be safe I am convert this value to raw float.*/
       ob_size = sizeof(float);
       float* p = (float*)(&buffer[buffer_index]);
-      /*because these values are already unsigned we
-	need not be bother about the sign of the data*/
       *p = argstring.toFloat(&ok);
+      if(ok==false) echo_data_type_error("string","DL_TYPE_INT8");
+    }
+      break;
+    case DL_TYPE_DOUBLE:{
+      /*Though we do have qreal type for coverting a float or 
+	double value.But I am not sure aout the size of qreal. Therefore
+	to be safe I am convert this value to raw float.*/
+      ob_size = sizeof(double);
+      double* p = (double*)(&buffer[buffer_index]);
+      *p = argstring.toDouble(&ok);
       if(ok==false) echo_data_type_error("string","DL_TYPE_INT8");
     }
       break;
@@ -188,52 +189,52 @@ static void on_DL_ACINFO(IvyClientPtr app __attribute__ ((unused)),
     std::cout<<"some error occured in while constructing the arg buffer"<<std::endl;
   }
     
-    DownlinkTransport *pchannel = (DownlinkTransport*)user_data;
+  DownlinkTransport *pchannel = (DownlinkTransport*)user_data;
     
-    int buffer_index=0;
-    qint16 course =((quint16*)(buffer))[buffer_index];
-    buffer_index+=sizeof(course);
+  int buffer_index=0;
+  qint16 course =((quint16*)(buffer))[buffer_index];
+  buffer_index+=sizeof(course);
 
-    qint32 utm_east =((quint32*)(buffer))[buffer_index];
-    buffer_index+=sizeof(utm_east);
+  qint32 utm_east =((quint32*)(buffer))[buffer_index];
+  buffer_index+=sizeof(utm_east);
 
 
-    qint32 utm_north = ((quint32*)(buffer))[buffer_index];
-    buffer_index+=sizeof(utm_north);
+  qint32 utm_north = ((quint32*)(buffer))[buffer_index];
+  buffer_index+=sizeof(utm_north);
     
-    qint32 alt = ((quint32*)(buffer))[buffer_index];
-    buffer_index+=sizeof(alt);
+  qint32 alt = ((quint32*)(buffer))[buffer_index];
+  buffer_index+=sizeof(alt);
 
 
 
-    quint32 itow = ((quint32*)(buffer))[buffer_index];
-    buffer_index+=sizeof(itow);
+  quint32 itow = ((quint32*)(buffer))[buffer_index];
+  buffer_index+=sizeof(itow);
 
 
-    quint16 speed = ((quint16*)(buffer))[buffer_index];
-    buffer_index+=sizeof(speed);
+  quint16 speed = ((quint16*)(buffer))[buffer_index];
+  buffer_index+=sizeof(speed);
 
 
-    qint16 climb= ((quint16*)(buffer))[buffer_index];
-    buffer_index+=sizeof(climb);
+  qint16 climb= ((quint16*)(buffer))[buffer_index];
+  buffer_index+=sizeof(climb);
 
 
-    quint8 ac_id= ((quint8*)(buffer))[buffer_index];
-    buffer_index+=sizeof(ac_id);
+  quint8 ac_id= ((quint8*)(buffer))[buffer_index];
+  buffer_index+=sizeof(ac_id);
 
-    DOWNLINK_SEND_ACINFO(pchannel,
-			 &course,
-			 &utm_east,
-			 &utm_north,
-			 &alt,
-			 &itow,
-			 &speed,
-			 &climb,
-			 &ac_id);
+  DOWNLINK_SEND_ACINFO(pchannel,
+		       &course,
+		       &utm_east,
+		       &utm_north,
+		       &alt,
+		       &itow,
+		       &speed,
+		       &climb,
+		       &ac_id);
     
  
-      delete [] buffer;
-      return;
+  delete [] buffer;
+  return;
 }
 
 static void on_DL_SETTING(IvyClientPtr app __attribute__ ((unused)),
@@ -253,13 +254,13 @@ static void on_DL_SETTING(IvyClientPtr app __attribute__ ((unused)),
     echo_msg_arg_error("DL_SETTING");
   }
   /*
-  qstring = argv[index++];
-  nbytes = qstring.toInt(&ok);
-  if(ok==false){
+    qstring = argv[index++];
+    nbytes = qstring.toInt(&ok);
+    if(ok==false){
     echo_msg_conversion_error("bytes","int");
-  }
-  qstring = argv[index++];
-  if(qstring!="DL_SETTING"){
+    }
+    qstring = argv[index++];
+    if(qstring!="DL_SETTING"){
     echo_msg_arg_error("DL_SETTING");
     }*/
    
@@ -312,13 +313,13 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
     echo_msg_arg_error("DL_GET_SETTING");
   }
   /*
-  qstring = argv[index++];
-  nbytes = qstring.toInt(&ok);
-  if(ok==false){
+    qstring = argv[index++];
+    nbytes = qstring.toInt(&ok);
+    if(ok==false){
     echo_msg_conversion_error("bytes","int");
-  }
-  qstring = argv[index++];
-  if(qstring!="GET_DL_SETTING"){
+    }
+    qstring = argv[index++];
+    if(qstring!="GET_DL_SETTING"){
     echo_msg_arg_error("DL_GET_SETTING");
     }*/
    
@@ -339,8 +340,8 @@ static void on_DL_GET_SETTING(IvyClientPtr app __attribute__ ((unused)),
   buffer_index+=sizeof(ac_id);
 
   DOWNLINK_SEND_GET_SETTING(pchannel, 
-			&_index,
-			&ac_id);
+			    &_index,
+			    &ac_id);
   
   
   delete [] buffer;
@@ -362,16 +363,6 @@ static void on_DL_BLOCK(IvyClientPtr app __attribute__ ((unused)),
   if(argc!=3){
     echo_msg_arg_error("DL_BLOCK");
   }
-  /*
-  qstring = argv[index++];
-  nbytes = qstring.toInt(&ok);
-  if(ok==false){
-    echo_msg_conversion_error("bytes","int");
-  }
-  qstring = argv[index++];
-  if(qstring!="BLOCK"){
-    echo_msg_arg_error("DL_BLOCK");
-    }*/
    
   nbytes=1+1;
   buffer = new char[nbytes];

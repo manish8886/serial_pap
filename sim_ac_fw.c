@@ -31,13 +31,6 @@ using namespace std;
 
 using namespace JSBSim;
 
-static void printargs(int argc, char* argv[],const char* msg){
-  /*cout << msg << std::endl;
-   while(argc >=0){
-    cout << std::endl << argv[argc] << std::endl;
-    argc--;
-    }*/
-}
 /* Datalink Ivy function */
 static void on_DL_PING(IvyClientPtr app __attribute__ ((unused)),
 			  void *user_data __attribute__ ((unused)),

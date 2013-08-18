@@ -19,7 +19,8 @@ SOURCES +=     enumport.cpp \
    reader.cpp \
    procthread.cpp \
    ivythread.cpp \ 
-  dl_transport.cpp
+  dl_transport.cpp \
+  jsbsim_thread.cpp
 
 
 #HEADERS  += mainwindow.h
@@ -30,11 +31,13 @@ SOURCES +=     enumport.cpp \
 
 #INCLUDEPATH += $$PWD/qextserialport
 #DEPENDPATH += $$PWD/qextserialport
+INCLUDEPATH += /usr/include/JSBSim                
+
 
 CONFIG += extserialport
 
 unix:!macx:!symbian: LIBS += -livy
-
+unix:!macx:!symbian: LIBS += -lJSBSim
 HEADERS += \
     common.h \
     ivy_dl_thread.h \
@@ -47,7 +50,8 @@ HEADERS += \
     telemsg.h \
     synchqueue.h \
     ivythread.h \
-    downlink_transport.h
+    downlink_transport.h \
+    jsbsim_thread.h
 
 QMAKE_CXXFLAGS += -funsigned-char 
 QMAKE_CXXFLAGS += -g3

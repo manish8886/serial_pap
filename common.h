@@ -1,7 +1,7 @@
 #define MAX_BYTE 256
 #define MAX_CHARS MAX_BYTE
 #define MAX_INDEX MAX_BYTE
-#define AC_ID 0x05
+#define DL_IVY_MSG_ID 149
 #define echo_error(_x)       {std::cout << _x << std::endl;}
 
 #define echo_msg_arg_error(_x)    {std::cout << "Incorrect number of arguments in" <<_x << std::endl;}

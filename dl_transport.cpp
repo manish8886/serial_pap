@@ -3,7 +3,7 @@
 #include "telemsg.h"
 #include "downlink_transport.h"
 #include "synchqueue.h"
-
+#include "generated/airframe.h"
 uint8_t DownlinkTransport::SizeOf (void *impl, uint8_t size){
   (void)impl;
   msg_len= size+extra_bytes;
@@ -41,7 +41,8 @@ void DownlinkTransport::PutBytes(void *impl, enum DownlinkDataType data_type, ui
   }
     break;
   case DL_TYPE_UINT64:
-  case DL_TYPE_INT64:{
+  case DL_TYPE_INT64:
+  case DL_TYPE_DOUBLE:{
     object_size = 8;
   }
     break;
@@ -49,7 +50,6 @@ void DownlinkTransport::PutBytes(void *impl, enum DownlinkDataType data_type, ui
     object_size = 4;
   }
     break;
-  case DL_TYPE_DOUBLE:
   case DL_TYPE_TIMESTAMP:
   default:{
     std::cout <<"Not defined yet" << std::endl;

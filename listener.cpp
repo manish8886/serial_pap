@@ -1,11 +1,12 @@
 #include <Ivy/ivy.h>
 #include <iostream>
-#include "listener.h"
+#include "common.h"
 
+#include "listener.h"
 
 extern int enumerateserialports();
 extern void setserialconf(PortSettings& portsettings);
-#include "common.h"
+
 ListenApp::ListenApp(int argc, char *argv[]):
   QCoreApplication(argc,argv) {
   //QCoreApplication a(argc, argv);

@@ -1,6 +1,7 @@
 #include "messages.h"
 #include "msgfactory.h"
 #include "telemsg.h"
+#include "common.h"
 CTelemetryMsg* CMsgFactory::CreateMsg(quint8 msg_id,quint8 len, char* buff )
 {
   CTelemetryMsg* pmsg=NULL;

@@ -4,6 +4,7 @@
 #include "messages.h"
 #include "msgfactory.h"
 #include "common.h"
+
 #define MSG_HEADER_LEN        ((1+1+1+1))/*STX+MSG_LEN+AC_ID|MSG_ID*/
 #define MSG_TAIL_LEN          ((1+1)) /*ck_a+ck_b*/
 #define MOVE_TO_DATA(buffer,start)  (buffer=&(((char*)buffer)[start+MSG_HEADER_LEN]))
