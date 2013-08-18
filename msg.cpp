@@ -251,7 +251,10 @@ QString IvyMsg::getPrettyMsg(){
 quint8 IvyMsg::getmsglength(){
   return msg_len;
 }
+/*the format of all downlink messages are AC_ID+MSG_ID.*/
 quint8 IvyMsg::getmsgid(){
-  return 0;
+  quint8 msg_id=0;
+  msg_id = ((quint8*)msgbuffer)[1];
+  return msg_id;
 }
 

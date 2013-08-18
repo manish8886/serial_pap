@@ -7,10 +7,13 @@ class CMsgProcThread:public QThread{
   Q_OBJECT
  public:
   CMsgProcThread(QSynchQueue<char*>*qu, QSynchQueue<CTelemetryMsg*>* pmsgvec,
-		 QSynchQueue<CTelemetryMsg*>* pivyqueue):
+		 QSynchQueue<CTelemetryMsg*>* pivyqueue,
+		 QSynchQueue<CTelemetryMsg*>* pjsbqueue
+		 ):
   pbufferedQueue(qu),
     pmsgContainer(pmsgvec),
-    pivymsgqueue(pivyqueue)
+    pivymsgqueue(pivyqueue),
+    pjsbsimqueue(pjsbqueue)
     {
       bstop=false;
     }
@@ -35,6 +38,7 @@ class CMsgProcThread:public QThread{
   QSynchQueue< char*>* pbufferedQueue;
   QSynchQueue< CTelemetryMsg*>* pmsgContainer;
   QSynchQueue< CTelemetryMsg*>* pivymsgqueue;
+  QSynchQueue< CTelemetryMsg*>* pjsbsimqueue;
 }; 
 
 

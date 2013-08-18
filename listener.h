@@ -33,8 +33,9 @@ private:
   QSynchQueue<char*> msgbuffqueue;
   QSynchQueue<CTelemetryMsg*>telemsgcontainer;
   QSynchQueue<CTelemetryMsg*>ivyqueue;
+  QSynchQueue<CTelemetryMsg*>jsbsimqueue;
   QSynchQueue<char*>uplinkmsgqueue;
-    
+
   QextSerialPort *pqtSerialPort;
   QTimer *ptimer;
 

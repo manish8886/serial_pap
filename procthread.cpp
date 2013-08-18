@@ -62,6 +62,7 @@ void CMsgProcThread::processmsg( char* buffer){
     CTelemetryMsg* pmsg=NULL;
     bool isMsgValid=false;
     int msg_len=0;
+    quint8 msg_id=0;
     switch(start_byte){
     case CMsg::STX:{
       isMsgValid = verifychecksum(&buffer[i]);
@@ -86,12 +87,15 @@ void CMsgProcThread::processmsg( char* buffer){
       if(isMsgValid){
 	pmsg = CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
       }
-      
       if(pmsg){
-	pivymsgqueue->enqueue(pmsg);
-	//std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
+	msg_id = pmsg->getmsgid();
       }else{
 	//std::cout <<"Couldn't form the message from message id:"<<"IVY_ID"<<std::endl;
+      }
+      pivymsgqueue->enqueue(pmsg);
+      
+      if(msg_id==DL_COMMANDS){
+	pjsbsimqueue->enqueue(pmsg);
       }
       
     }
