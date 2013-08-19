@@ -1,3 +1,4 @@
+#include <QtCore/QtGlobal>
 #include "jsbsim_thread.h"
 #include "paparazzi.h"
 #include  "dl_protocol2.h"
@@ -13,9 +14,9 @@ quint8 JSBSimThread::gps_id=1;
 quint8 JSBSimThread::ac_id=AC_ID;
 quint8 JSBSimThread::ir_id=1;
 
-JSBSimThread::JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<char*>*pQueue)
+JSBSimThread::JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<CTelemetryMsg*>*pQueue)
   :TransportChannel(pdatalink_queue),
-   pAutopilot_Commands_Queue(pQueue){
+   ptelemetry_msg_queue(pQueue){
   FDMExec = new JSBSim::FGFDMExec();
   SimTimer.setInterval(JSBSIM_PERIOD);
    }
@@ -60,19 +61,18 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
   // detect launch
   if (!run_model ) {
     run_model = true;
-    //set_value(FDMExec, "propulsion/set-running", 1);
-    // set initial speed
-    //FDMExec->GetIC()->SetAltitudeAGLFtIC(5.0 / FT2M);
-    //FDMExec->GetIC()->SetVgroundFpsIC(20./FT2M);
     FDMExec->GetIC()->SetUBodyFpsIC( JSBSIM_LAUNCHSPEED / FT2M);
     FDMExec->RunIC();
     th = 0.;
   }
-  char* payload = pAutopilot_Commands_Queue->dequeue();
-  if(payload==NULL){
+  CTelemetryMsg* pmsg = ptelemetry_msg_queue->dequeue();
+  if(pmsg==NULL){
     return;
   }
+  
   qint16 *commands;
+  char* payload=NULL;
+  pmsg->getBufferedMsg(&payload);
   commands =(qint16*) DL_COMMANDS_values(payload);
 
   double diff_throttle = normalize_from_pprz(commands[COMMAND_THROTTLE]) - throttle_slewed;
@@ -85,6 +85,12 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
 #ifdef COMMAND_YAW
   set_value( "fcs/rudder-cmd-norm",   normalize_from_pprz(commands[COMMAND_YAW]));
 #endif
+  
+  /*Delete the buffer now.*/
+  if(payload)
+    delete [] payload;
+  if(pmsg)
+    delete pmsg;
 
 }
 double JSBSimThread::get_value(string name) {
@@ -144,11 +150,16 @@ void JSBSimThread::copy_outputs_from_jsbsim(){
 
 
 }
+void JSBSimThread::jsbsim_stop(){
+  SimTimer.stop();
+  exit(0);
+}
 
 void JSBSimThread::jsbsim_init(){
   // *** SET UP JSBSIM *** //
   char* root = getenv("PAPARAZZI_HOME");
-  if (root == NULL) {
+  root = "/home/manish/paprazzi-git/paparazzi/";
+  if (root==NULL) {
     cerr << "PAPARAZZI_HOME is not defined" << endl;
     exit(0);
   }

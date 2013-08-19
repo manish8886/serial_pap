@@ -18,13 +18,20 @@ ListenApp::ListenApp(int argc, char *argv[]):
   /*create timer but don't start it now*/
   ptimer = new QTimer();
   
-  //first create threads
+  /*first create threads.*/
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
+  
   processor = new CMsgProcThread(&msgbuffqueue,&telemsgcontainer,&ivyqueue,
 				 &jsbsimqueue);
+  
+  writer = new CWriterThread(pqtSerialPort,&uplinkmsgqueue);
+  
   ivy_dl_thread = new CIvyDlThread(&ivyqueue);  
 
   pivyloopthread = new IvyThread(&uplinkmsgqueue);
+
+  pjsbsim_thread = new JSBSimThread(&uplinkmsgqueue,&jsbsimqueue);
+  
 }
 ListenApp::~ListenApp(){
   if(pqtSerialPort)
@@ -61,6 +68,9 @@ bool ListenApp::setup(int brate,int time){
   connect(this,SIGNAL(serial_port_closed()),ivy_dl_thread,SLOT(stop_processing()));
   /*connect ivy main loop  thread slot to serial port closed signal*/
   connect(this,SIGNAL(serial_port_closed()),pivyloopthread,SLOT(stop_processing()));
+
+   /*connect ivy main loop  thread slot to serial port closed signal*/
+  connect(this,SIGNAL(serial_port_closed()),pjsbsim_thread,SLOT(jsbsim_stop()));
   /*set the timer interval*/
   ptimer->setInterval(time);
   /*start timer*/
@@ -72,6 +82,7 @@ bool ListenApp::setup(int brate,int time){
   processor->start();
   pivyloopthread->start();
   ivy_dl_thread->start();
+  pjsbsim_thread->start();
   return true;
 }
 void ListenApp::closeapp(){
@@ -84,7 +95,7 @@ void ListenApp::closeapp(){
   }
 
   emit serial_port_closed();
-
+  
   /*Make every queue non blocking*/
   msgbuffqueue.makequeuenonblocking();
   ivyqueue.makequeuenonblocking();
@@ -95,15 +106,21 @@ void ListenApp::closeapp(){
 
   if(reader)
     reader->wait();
+  if(writer)
+    writer->wait();
+
   if(processor){
     processor->wait();
   }
   if(ivy_dl_thread){
     ivy_dl_thread->wait();
   }
-  
   if(pivyloopthread){
     pivyloopthread->wait();
+  }
+  
+  if(pjsbsim_thread){
+    pjsbsim_thread->wait();
   }
   exit(0);
 }

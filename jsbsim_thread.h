@@ -19,6 +19,7 @@
 #include "generated/flight_plan.h"
 
 
+#include "telemsg.h"
 #include "synchqueue.h"
 #include "downlink_transport.h"
 
@@ -46,7 +47,7 @@ using namespace JSBSim;
 class JSBSimThread:public QThread{
   Q_OBJECT
  public:
-  JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<char*>*pQueue);
+  JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<CTelemetryMsg*>*pQueue);
   ~JSBSimThread(){
     if(FDMExec)
       delete FDMExec;
@@ -57,6 +58,7 @@ class JSBSimThread:public QThread{
   
   private Q_SLOTS:
   void jsbsim_periodic();
+  void jsbsim_stop();
  private:
   void jsbsim_init();
   void copy_inputs_to_jsbsim();
@@ -68,7 +70,7 @@ class JSBSimThread:public QThread{
   
  private:
   DownlinkTransport TransportChannel;
-  QSynchQueue<char*>*pAutopilot_Commands_Queue;
+  QSynchQueue<CTelemetryMsg*>*ptelemetry_msg_queue;
   QTimer SimTimer;
   JSBSim::FGFDMExec* FDMExec;
   bool run_model;
