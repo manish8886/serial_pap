@@ -88,8 +88,16 @@ void CMsgProcThread::processmsg( char* buffer){
       }
       if(pmsg){
 	pivymsgqueue->enqueue(pmsg);
-	if(pmsg->isJSBSIMmsg())
+	if(pmsg->isJSBSIMmsg()){
+	  char* buff = NULL;
+	  pmsg->getBufferedMsg(&buff);
+	  if(buff){
+	    std::cout << "COMMANDS MSG is:" << buff <<std::endl;
+	    delete [] buff;
+	  }
+	  
 	  pjsbsimqueue->enqueue(pmsg);
+	}
       }
     }
       break;
