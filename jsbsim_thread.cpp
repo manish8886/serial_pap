@@ -19,6 +19,7 @@ JSBSimThread::JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<CTelem
   :TransportChannel(pdatalink_queue),
    ptelemetry_msg_queue(pQueue){
   FDMExec = new JSBSim::FGFDMExec();
+  int ms = JSBSIM_PERIOD;
   SimTimer.setInterval(JSBSIM_PERIOD);
    }
 
@@ -81,6 +82,8 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
   if(payload==NULL){
     delete[] pmsg;
     return;
+  }else{
+    std::cout << "JSGBSIM  msg received " << payload << std::endl;
   }
   QString qpayload(payload);
   QStringList strList =qpayload.split(" ",QString::SkipEmptyParts);
