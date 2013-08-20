@@ -7,8 +7,8 @@ void CIvyDlThread::run(){
     CTelemetryMsg *pmsg = pivymsgqueue->dequeue();
     if(pmsg==NULL)
       continue;
-    pmsg->getBufferedMsg(&buffer);
-    if(buffer==NULL)
+    int len =  pmsg->getBufferedMsg(&buffer);
+    if(buffer==NULL || len==0)
       continue;
      IvySendMsg("%s",buffer);
     delete [] buffer;
