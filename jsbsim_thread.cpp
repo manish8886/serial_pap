@@ -53,6 +53,7 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
   
   static double throttle_slewed = 0.;
   static double th = 0.;
+  int msg_queue_size=0;
 #ifndef JSBSIM_LAUNCHSPEED
 #define JSBSIM_LAUNCHSPEED 20.0 //launch speed in m/s aligned with airframe body forward
 #endif
@@ -65,7 +66,9 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
     FDMExec->RunIC();
     th = 0.;
   }
-  if(ptelemetry_msg_queue->get_size()==0){
+  msg_queue_size = ptelemetry_msg_queue->get_size();
+  std::cout << "size of message queue is:" << msg_queue_size <<std::endl;
+  if(msg_queue_size==0){
     /*don't block*/
     return;
   }
