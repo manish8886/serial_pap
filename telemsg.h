@@ -22,7 +22,9 @@ class CTelemetryMsg:public CMsg{
     if(msgbuffer)
       delete [] msgbuffer;
   }
-  
+  virtual bool isJSBSIMmsg(){
+    return false;
+  }
  public:
   //allocate and fill buffer and return it's length.
   virtual int getBufferedMsg(char** buffer)=0;
@@ -97,6 +99,7 @@ class IvyMsg : public CTelemetryMsg{
   virtual QString getPrettyMsg();
   virtual quint8 getmsglength();
   virtual quint8 getmsgid();
+  virtual bool isJSBSIMmsg();
 
  public:
   static const  int MARKER_BYTES = 3 ;/*IVY_START+LEN+IVY_LEN*/\

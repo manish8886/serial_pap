@@ -88,16 +88,10 @@ void CMsgProcThread::processmsg( char* buffer){
 	pmsg = CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
       }
       if(pmsg){
-	msg_id = pmsg->getmsgid();
-      }else{
-	//std::cout <<"Couldn't form the message from message id:"<<"IVY_ID"<<std::endl;
+	pivymsgqueue->enqueue(pmsg);
+	if(pmsg->isJSBSIMmsg())
+	  pjsbsimqueue->enqueue(pmsg);
       }
-      pivymsgqueue->enqueue(pmsg);
-      
-      if(msg_id==DL_COMMANDS){
-	pjsbsimqueue->enqueue(pmsg);
-      }
-      
     }
       break;
     default:

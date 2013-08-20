@@ -254,7 +254,16 @@ quint8 IvyMsg::getmsglength(){
 /*the format of all downlink messages are AC_ID+MSG_ID.*/
 quint8 IvyMsg::getmsgid(){
   quint8 msg_id=0;
-  msg_id = ((quint8*)msgbuffer)[1];
   return msg_id;
 }
 
+bool IvyMsg::isJSBSIMmsg(){
+  QString msg(msgbuffer);
+  QString commands = "COMMANDS";
+  int index ;
+  index = msg.indexOf(commands);
+  if(index==-1)
+    return false;
+  else
+    return true;
+}

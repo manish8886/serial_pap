@@ -1,4 +1,5 @@
 #include <QtCore/QtGlobal>
+#include <QtCore/QStringList>
 #include "jsbsim_thread.h"
 #include "paparazzi.h"
 #include  "dl_protocol2.h"
@@ -70,10 +71,37 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
     return;
   }
   
-  qint16 *commands;
+  qint16 *commands = new qint16[COMMANDS_NB];
   char* payload=NULL;
   pmsg->getBufferedMsg(&payload);
-  commands =(qint16*) DL_COMMANDS_values(payload);
+  QString qpayload(payload);
+  QStringList strList =qpayload.split(" ",QString::SkipEmptyParts);
+  
+  quint8 ac_id;
+  QString msg_name;
+  QString qcommands_array;
+  
+  if(qpayload.size()<3){
+    std::cout << "Incomplete JSBSIM Msg Received " << std::endl;
+  }
+    
+  ac_id = strList[0].toUInt();
+  msg_name = strList[1];
+  if(msg_name != "COMMANDS"){
+    std::cout << "Incorrect JSBSIM Msg Received " << std::endl;
+  }
+  
+  qcommands_array = strList[2];
+  
+  QStringList commands_value = qcommands_array.split(",",QString::SkipEmptyParts);
+
+  if(commands_value.size()!=COMMANDS_NB){
+    std::cout << "Incomplete Commands array Received " << std::endl;
+  }
+  
+  for(int i=0; i<COMMANDS_NB;i++){
+    commands[i] = commands_value[i].toUInt();
+  }
 
   double diff_throttle = normalize_from_pprz(commands[COMMAND_THROTTLE]) - throttle_slewed;
   BoundAbs(diff_throttle, 0.01);
