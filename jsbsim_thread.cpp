@@ -157,14 +157,13 @@ void JSBSimThread::jsbsim_stop(){
 
 void JSBSimThread::jsbsim_init(){
   // *** SET UP JSBSIM *** //
-  char* root = getenv("PAPARAZZI_HOME");
-  root = "/home/manish/paprazzi-git/paparazzi/";
-  if (root==NULL) {
+  QByteArray root  = qgetenv("PAPARAZZI_HOME");
+  if (root.data()==NULL) {
     cerr << "PAPARAZZI_HOME is not defined" << endl;
     exit(0);
   }
   string pprzRoot = string(root);
-  
+    
 #ifdef JSBSIM_MODEL
   AircraftName = JSBSIM_MODEL;
 #endif
