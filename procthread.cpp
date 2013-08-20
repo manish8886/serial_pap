@@ -95,7 +95,6 @@ void CMsgProcThread::processmsg( char* buffer){
 	    std::cout << "COMMANDS MSG is:" << buff <<std::endl;
 	    delete [] buff;
 	  }
-	  
 	  pjsbsimqueue->enqueue(pmsg);
 	}
       }

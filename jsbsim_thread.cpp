@@ -19,8 +19,6 @@ JSBSimThread::JSBSimThread(QSynchQueue<char*>*pdatalink_queue,QSynchQueue<CTelem
   :TransportChannel(pdatalink_queue),
    ptelemetry_msg_queue(pQueue){
   FDMExec = new JSBSim::FGFDMExec();
-  int ms = JSBSIM_PERIOD;
-  SimTimer.setInterval(JSBSIM_PERIOD);
    }
 
 void JSBSimThread::set_value(string name, double value) {
@@ -190,7 +188,8 @@ void JSBSimThread::copy_outputs_from_jsbsim(){
 
 }
 void JSBSimThread::jsbsim_stop(){
-  SimTimer.stop();
+  if(psimtimer)
+    psimtimer->stop();
   exit(0);
 }
 
@@ -274,9 +273,12 @@ void JSBSimThread::jsbsim_init(){
 
 void JSBSimThread::run(){
   jsbsim_init();
-  connect(&SimTimer,SIGNAL(timeout()),this,SLOT(jsbsim_periodic()));
-  SimTimer.start();
-  exec();
+  psimtimer = new QTimer(0);
+  psimtimer->setInterval(JSBSIM_PERIOD);
+  psimtimer->moveToThread(this);
+  connect(psimtimer,SIGNAL(timeout()),this,SLOT(jsbsim_periodic()));
+  psimtimer->start();
+  QThread::exec();
  }
 
 bool JSBSimThread::check_crash_jsbsim(){

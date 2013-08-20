@@ -51,7 +51,10 @@ class JSBSimThread:public QThread{
   ~JSBSimThread(){
     if(FDMExec)
       delete FDMExec;
-    SimTimer.stop();
+    if(psimtimer){
+      psimtimer->stop();
+      delete psimtimer;
+    }
   }
  protected:
   void run();
@@ -71,7 +74,7 @@ class JSBSimThread:public QThread{
  private:
   DownlinkTransport TransportChannel;
   QSynchQueue<CTelemetryMsg*>*ptelemetry_msg_queue;
-  QTimer SimTimer;
+  QTimer *psimtimer;
   JSBSim::FGFDMExec* FDMExec;
   bool run_model;
   string ICName;
