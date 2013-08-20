@@ -90,7 +90,7 @@ void CMsgProcThread::processmsg( char* buffer){
 	pivymsgqueue->enqueue(pmsg);
 	if(pmsg->isJSBSIMmsg()){
 	  /*copy the message to jsbsim queue.*/
-	  pjsbsimqueue->enqueue(CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
+	  pjsbsimqueue->enqueue(CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]));
 	}
       }
     }
