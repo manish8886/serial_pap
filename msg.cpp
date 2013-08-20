@@ -235,7 +235,7 @@ bool IvyMsg::verifyMsg( const char* buffer){
 
 int IvyMsg::getBufferedMsg(char** buffer){
   *buffer=NULL;
-  if(msgbuffer==NULL)
+  if(msgbuffer==NULL || (msg_len ==0))
     return 0;
   *buffer =  new char[msg_len];
   memcpy(*buffer,msgbuffer,msg_len);
