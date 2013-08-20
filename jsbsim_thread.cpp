@@ -67,7 +67,6 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
     th = 0.;
   }
   msg_queue_size = ptelemetry_msg_queue->get_size();
-  std::cout << "size of message queue is:" << msg_queue_size <<std::endl;
   if(msg_queue_size==0){
     /*don't block*/
     return;
@@ -76,7 +75,6 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
   if(pmsg==NULL){
     return;
   }
-  
   qint16 *commands = new qint16[COMMANDS_NB];
   char* payload=NULL;
   pmsg->getBufferedMsg(&payload);
@@ -84,7 +82,7 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
     delete[] pmsg;
     return;
   }else{
-    std::cout << "JSGBSIM  msg received " << payload << std::endl;
+    /*std::cout << "JSGBSIM  msg received " << payload << std::endl;*/
   }
   QString qpayload(payload);
   QStringList strList =qpayload.split(" ",QString::SkipEmptyParts);
