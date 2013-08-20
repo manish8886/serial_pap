@@ -78,7 +78,7 @@ bool ListenApp::setup(int brate,int time){
   
   /*start reader*/
   reader->start();
-  writer = new CWriterThread(pqtSerialPort,&uplinkmsgqueue);
+  writer->start();
   /*start processor*/
   processor->start();
   pivyloopthread->start();
