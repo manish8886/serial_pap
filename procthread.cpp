@@ -89,13 +89,8 @@ void CMsgProcThread::processmsg( char* buffer){
       if(pmsg){
 	pivymsgqueue->enqueue(pmsg);
 	if(pmsg->isJSBSIMmsg()){
-	  char* buff = NULL;
-	  pmsg->getBufferedMsg(&buff);
-	  if(buff){
-	    std::cout << "COMMANDS MSG is:" << buff <<std::endl;
-	    delete [] buff;
-	  }
-	  pjsbsimqueue->enqueue(pmsg);
+	  /*copy the message to jsbsim queue.*/
+	  pjsbsimqueue->enqueue(CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
 	}
       }
     }
