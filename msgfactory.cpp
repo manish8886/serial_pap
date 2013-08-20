@@ -15,7 +15,9 @@ CTelemetryMsg* CMsgFactory::CreateMsg(quint8 msg_id,quint8 len, char* buff )
     break;
   case DL_IVY_MSG_ID:
     /*IVY_START+LEN+PAYLOAD+IVY_END*/
-    pmsg = new IvyMsg(&buff[IvyMsg::MARKER_BYTES-1],len-IvyMsg::MARKER_BYTES);
+    if(len >IvyMsg::MARKER_BYTES){
+      pmsg = new IvyMsg(&buff[IvyMsg::MARKER_BYTES-1],len-IvyMsg::MARKER_BYTES);
+    }
     break;
   default:
     pmsg = NULL;

@@ -66,11 +66,10 @@ void CMsgProcThread::processmsg( char* buffer){
     switch(start_byte){
     case CMsg::STX:{
       isMsgValid = verifychecksum(&buffer[i]);
-      msg_len = GET_MSG_LEN(buffer,i);
       if(isMsgValid){
+	msg_len = GET_MSG_LEN(buffer,i);
 	pmsg = CMsgFactory::CreateMsg(GET_MSG_ID(buffer,i),msg_len,GET_MSG_PTR(buffer,i));
       }
-      
       if(pmsg){
 	pmsgContainer->enqueue(pmsg);
 	std::cout << pmsg->getPrettyMsg().toStdString() << std::endl;
@@ -83,8 +82,8 @@ void CMsgProcThread::processmsg( char* buffer){
       break;
     case CMsg::IVY_START:{
       isMsgValid = IvyMsg::verifyMsg(&buffer[i]);
-      msg_len = buffer[i+1];
       if(isMsgValid){
+	msg_len = buffer[i+1];
 	pmsg = CMsgFactory::CreateMsg(DL_IVY_MSG_ID,msg_len,&buffer[i]);
       }
       if(pmsg){

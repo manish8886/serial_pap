@@ -256,7 +256,6 @@ quint8 IvyMsg::getmsgid(){
   quint8 msg_id=0;
   return msg_id;
 }
-
 bool IvyMsg::isJSBSIMmsg(){
   QString msg(msgbuffer);
   QString commands = "COMMANDS";

@@ -66,6 +66,10 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
     FDMExec->RunIC();
     th = 0.;
   }
+  if(ptelemetry_msg_queue->get_size()==0){
+    /*don't block*/
+    return;
+  }
   CTelemetryMsg* pmsg = ptelemetry_msg_queue->dequeue();
   if(pmsg==NULL){
     return;
@@ -74,6 +78,10 @@ void JSBSimThread::copy_inputs_to_jsbsim(){
   qint16 *commands = new qint16[COMMANDS_NB];
   char* payload=NULL;
   pmsg->getBufferedMsg(&payload);
+  if(payload==NULL){
+    delete[] pmsg;
+    return;
+  }
   QString qpayload(payload);
   QStringList strList =qpayload.split(" ",QString::SkipEmptyParts);
   

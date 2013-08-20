@@ -11,6 +11,7 @@ class QSynchQueue{
   ~QSynchQueue();
  public:
   void enqueue(const T1& data);
+  int get_size();
   T1 dequeue();
   /*  T& head();
       const T& head()const;*/
@@ -33,6 +34,14 @@ QSynchQueue<T1>::QSynchQueue(){
 template<class T1>
 QSynchQueue<T1>::~QSynchQueue(){
   cv.wakeAll();
+}
+template<class T1>
+int QSynchQueue<T1>::get_size(){
+  int size=0;
+  mutex.lock();
+  size = container.size();
+  mutex.unlock();
+  return size;
 }
 
 template<class T1>
