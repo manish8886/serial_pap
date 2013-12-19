@@ -19,3 +19,4 @@ Makefile
 qextserialport/
 serial_pap
 *-build-*
+*cscope*
