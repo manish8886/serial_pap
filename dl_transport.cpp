@@ -110,6 +110,8 @@ void DownlinkTransport::EndMessage(void *impl){
   /*copy the buffer in msg queue*/
   char* data = new char[msg_len];
   memcpy(data,buffer,msg_len);
+  
+  /*This is a thread safe queue.*/
   ptransmitqueue->enqueue(data);
   /*Now reset everything*/
   /*always zero the buffer*/

@@ -27,7 +27,10 @@ static quint64 mod_value(QString string,qint8* psign, bool* ok){
   return value;
 }
 
-
+/*
+ *This is a generic function which converts a string representation
+ *into it's byte form.
+*/
 static bool fill_buffer_array(const char* const* argv,DownlinkDataType typev[],unsigned int argc,char* buffer,unsigned int bytes){
   quint32 buffer_index = 0;
   quint32 argv_index = 0;
@@ -456,12 +459,30 @@ void IvyThread::ivy_transport_init(void) {
 }
 
 void IvyThread::sim_autopilot_init(void){
-  void *ptr = &TransportChannel;
+  DownlinkTransport *ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_PING, ptr, "^(\\S*) DL_PING");
+  
+  ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_ACINFO, ptr, "^(\\S*) DL_ACINFO (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
+  
+
+  ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_SETTING,ptr, "^(\\S*) DL_SETTING (\\S*) (\\S*) (\\S*)");
+
+  ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_GET_SETTING,ptr, "^(\\S*) GET_DL_SETTING (\\S*) (\\S*)");
+
+  ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_BLOCK, ptr, "^(\\S*) BLOCK (\\S*) (\\S*)");
+
+
+  ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_MOVE_WP,ptr, "^(\\S*) MOVE_WP (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
 }
 

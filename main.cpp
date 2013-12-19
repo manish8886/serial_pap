@@ -37,6 +37,5 @@ int main(int argc, char *argv[]){
   if(a.setup(baudrate,time)==false){
     return 0;
   }
-      
     return a.exec();
 }

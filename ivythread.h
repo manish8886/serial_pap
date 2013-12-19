@@ -1,12 +1,26 @@
 #ifndef IVY_THREAD_H 
 #define IVY_THREAD_H 
 #include <QtCore/QThread>
+#include <QtCore/QVector>
 #include "downlink_transport.h"
 class IvyThread:public QThread{
   Q_OBJECT
     public:
-  IvyThread(QSynchQueue< char*> *pqueue):
-  TransportChannel(pqueue){
+  IvyThread(QSynchQueue< char*> *pq):
+  /* TransportChannel(pqueue)*/
+  pqueue(pq){
+  }
+  ~IvyThread(){
+    QVector<DownlinkTransport*>::iterator it;
+    for(it=TransportChannelVector.begin();
+	it!=TransportChannelVector.end();
+	it++
+	){
+      DownlinkTransport* p = *it;
+      if(p){
+	delete p;
+      }
+    }
     
   }
   public Q_SLOTS:
@@ -17,7 +31,11 @@ class IvyThread:public QThread{
   void ivy_transport_init(void);
   void sim_autopilot_init(void);
  private:
-  DownlinkTransport TransportChannel;
+  /*Make a seperate transport channel for each 
+   DL message callback*/
+  QVector<DownlinkTransport*>TransportChannelVector;
+  /*Transmit queue for Downlink Transport*/
+  QSynchQueue<char*>*pqueue;
 };
 
 #endif
