@@ -16,7 +16,7 @@ ListenApp::ListenApp(int argc, char *argv[]):
   pqtSerialPort = new QextSerialPort ("/dev/ttyS0",settings,QextSerialPort::Polling);
   
   /*create timer but don't start it now*/
-  ptimer = new QTimer();
+  ptimer = new QTimer(0);
   
   /*first create threads.*/
   reader = new CReaderThread(pqtSerialPort,&msgbuffqueue);
@@ -81,8 +81,8 @@ bool ListenApp::setup(int brate,int time){
   writer->start();
   /*start processor*/
   processor->start();
-  pivyloopthread->start();
   ivy_dl_thread->start();
+  pivyloopthread->start();
   pjsbsim_thread->start();
   return true;
 }
