@@ -3,6 +3,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QVector>
 #include "downlink_transport.h"
+#include "synchqueue.h"
 class IvyThread:public QThread{
   Q_OBJECT
     public:

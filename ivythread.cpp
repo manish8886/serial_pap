@@ -4,9 +4,10 @@
 #include <Ivy/ivyloop.h>
 #include "messages.h"
 #include "common.h"
-#include "ivythread.h"
 #include "dl_protocol2.h"
 #include "generated/airframe.h"
+#include "hitl_transport.h"
+#include "ivythread.h"
 
 using namespace std;
 #ifdef __APPLE__
@@ -457,7 +458,7 @@ void IvyThread::ivy_transport_init(void) {
   IvyInit ("Paparazzi jsbsim " + AC_ID, "READY", NULL, NULL, NULL, NULL);
   IvyStart(ivyBus.c_str());
 }
-
+/*
 void IvyThread::sim_autopilot_init(void){
   DownlinkTransport *ptr =new DownlinkTransport(pqueue);
   TransportChannelVector.push_back(ptr);
@@ -482,6 +483,35 @@ void IvyThread::sim_autopilot_init(void){
 
 
   ptr =new DownlinkTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_MOVE_WP,ptr, "^(\\S*) MOVE_WP (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
+}
+*/
+
+void IvyThread::sim_autopilot_init(void){
+  DownlinkTransport *ptr =new HitlTransport(this->pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_PING, ptr, "^(\\S*) DL_PING");
+  
+  ptr =new HitlTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_ACINFO, ptr, "^(\\S*) DL_ACINFO (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
+  
+
+  ptr =new HitlTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_SETTING,ptr, "^(\\S*) DL_SETTING (\\S*) (\\S*) (\\S*)");
+
+  ptr =new HitlTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_GET_SETTING,ptr, "^(\\S*) GET_DL_SETTING (\\S*) (\\S*)");
+
+  ptr =new HitlTransport(pqueue);
+  TransportChannelVector.push_back(ptr);
+  IvyBindMsg(on_DL_BLOCK, ptr, "^(\\S*) BLOCK (\\S*) (\\S*)");
+
+
+  ptr =new HitlTransport(pqueue);
   TransportChannelVector.push_back(ptr);
   IvyBindMsg(on_DL_MOVE_WP,ptr, "^(\\S*) MOVE_WP (\\S*) (\\S*) (\\S*) (\\S*) (\\S*)");
 }

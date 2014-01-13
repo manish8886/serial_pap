@@ -114,7 +114,7 @@ void HitlTransport::InitData(){
   downlink_nb_bytes=0;
   
 }
-void HitlTransport::StartMessage(void *impl, const char *name, uint8_t msg_id, uint8_t payload_len){
+void HitlTransport::StartMessage(void *impl,const char *name, uint8_t msg_id, uint8_t payload_len){
   (void)impl;
   InitData();
   DownlinkStartMessage(HITL_TRANSPORT,HITL_DEVICE, _name, msg_id, payload_len);

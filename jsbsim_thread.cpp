@@ -33,12 +33,12 @@ void JSBSimThread::jsbsim_periodic(){
   if (run_model) {
     result = FDMExec->Run();
   }
-  /* check if still flying */
+  /* check if still flying 
   result =  check_crash_jsbsim();
   if(!result){
     std::cout << "plane has crashed therefore exiting" << std::endl;
     exit(0);
-  }
+    }*/
   
   /* read outputs from model state */
   copy_outputs_from_jsbsim();

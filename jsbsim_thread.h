@@ -21,8 +21,8 @@
 
 #include "telemsg.h"
 #include "synchqueue.h"
-#include "downlink_transport.h"
-
+/*#include "downlink_transport.h"*/
+#include "hitl_transport.h"
 
 
 using namespace std;
@@ -72,7 +72,9 @@ class JSBSimThread:public QThread{
   double normalize_from_pprz(int command);
   
  private:
-  DownlinkTransport TransportChannel;
+  /* DownlinkTransport TransportChannel;*/
+  HitlTransport TransportChannel;
+
   QSynchQueue<CTelemetryMsg*>*ptelemetry_msg_queue;
   QTimer *psimtimer;
   JSBSim::FGFDMExec* FDMExec;

@@ -19,7 +19,6 @@ SOURCES +=     enumport.cpp \
    reader.cpp \
    procthread.cpp \
    ivythread.cpp \ 
-  dl_transport.cpp \
   jsbsim_thread.cpp \
   serial_port_writer.cpp \
   hitl_transport.cpp
@@ -51,7 +50,6 @@ HEADERS += \
     telemsg.h \
     synchqueue.h \
     ivythread.h \
-    downlink_transport.h \
     jsbsim_thread.h \
     serial_port_writer.h \
     hitl_transport.h 
