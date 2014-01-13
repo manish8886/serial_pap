@@ -30,6 +30,7 @@
 #include <QtCore/QtGlobal>
 #include "inttypes.h"
 #include "downlink_transport_paparazzi.h"
+#include "downlink.h"
 #include "common.h"
 
 
@@ -42,7 +43,7 @@ class HitlTransport : public DownlinkTransport
 public:
 HitlTransport(QSynchQueue< char*> *pqueue){
 /*Though these must be done in initiliser list.*/
-cur_index=msg_len=ck_a=ck_b=0;
+InitData();
 ptransmitqueue =pqueue;
 bzero(buffer,MAX_BYTE);
 }
@@ -55,13 +56,20 @@ void StartMessage(void *impl,const char *name, uint8_t msg_id, uint8_t payload_l
 void Overrun(void *impl);
 void CountBytes(void *impl, uint8_t len);
 void Periodic(void *impl);
-
+private:
+void Fn_Transmit(uint8_t _x);
+bool_t Fn_CheckFreeSpace(uint8_t _x);
+void Fn_SendMessage();
+void InitData();
 private:
 char buffer[MAX_CHARS];
 quint16 cur_index;
 QSynchQueue<char*>*ptransmitqueue;
 quint8 ck_a,ck_b;
 
+uint8_t downlink_nb_ovrn;
+uint8_t downlink_nb_bytes;
+uint8_t downlink_nb_msgs;
 };
 
 #endif /* DOWNLINK_TRANSPORT_H */

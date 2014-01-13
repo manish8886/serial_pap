@@ -28,12 +28,11 @@
 #ifndef DOWNLINK_H
 #define DOWNLINK_H
 
-#include <inttypes.h>
-
+#include "inttypes.h"
 #include "messages.h"
 #include "generated/airframe.h" // AC_ID is required
 
-#include "subsystems/datalink/pprz_transport.h"
+#include "pprz_transport.h"
 /* Transport macros
  *
  * call transport functions from channel

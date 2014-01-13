@@ -21,8 +21,8 @@ SOURCES +=     enumport.cpp \
    ivythread.cpp \ 
   dl_transport.cpp \
   jsbsim_thread.cpp \
-  serial_port_writer.cpp
-
+  serial_port_writer.cpp \
+  hitl_transport.cpp
 
 #HEADERS  += mainwindow.h
 
@@ -53,7 +53,10 @@ HEADERS += \
     ivythread.h \
     downlink_transport.h \
     jsbsim_thread.h \
-    serial_port_writer.h
+    serial_port_writer.h \
+    hitl_transport.h 
+    
+    
 
 QMAKE_CXXFLAGS += -funsigned-char 
 QMAKE_CXXFLAGS += -g3
