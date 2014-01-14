@@ -77,7 +77,7 @@ bool ListenApp::setup(int brate,int time){
   ptimer->start();
   
   /*start reader*/
-  /*  reader->start();*/
+  reader->start();
   writer->start();
   /*start processor*/
   processor->start();
