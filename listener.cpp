@@ -79,11 +79,14 @@ bool ListenApp::setup(int brate,int time){
   /*start reader*/
   reader->start();
   writer->start();
+
+#ifndef SERIO_TESTING  
   /*start processor*/
   processor->start();
   ivy_dl_thread->start();
   pivyloopthread->start();
   pjsbsim_thread->start();
+#endif
   return true;
 }
 void ListenApp::closeapp(){
